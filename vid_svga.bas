@@ -17,23 +17,30 @@ End Sub
 
 ' mostramos en pantalla la imagen creada en el "vga_buffer"
 Sub svga_doblit(y1 As Integer , y2 As Integer ) 
-	Static As Integer cadaxveces
-   Dim As Integer a,b,c
+	Static As Integer cadaxveces=Any
+   Dim As Integer a=Any,b=any,c=any
 	
    If y1>=y2 Then 
-   	Return ' no se si debe ser asi
+   	Return ' vuelve sin hacer nada
    EndIf
    
 	ScreenLock
 		'cadaxveces-=1
 		'If cadaxveces<0 Then 
-		'	cadaxveces=2
-		For a=y1 To y2-1 'y1=inicio de linea, y2 fin de linea
-			For b=0 To wx-1  +32 ' creo que hay que compensar los bordes con este "+32"
-				PSet (b-32,a),vga_buffer(a,b)
+		'	cadaxveces=1
+		For a=y1 To y2-1 'y1=inicio de linea, y2 fin de linea (menos uno)
+			For b=32 To wx-1  +32 ' hay que compensar los bordes con este "+32"
+				'PSet (b-32,a),vga_buffer(a,b) ' metodo tradicional mas lento
+				' segun SCREENINFO , PITCH=3200 y BYTE-PER-PYXEL=4 (para DEPTH=32)
+				 pixel= scrbuffer + (a * 3200) + ((b-32) Shl 2) '(b SHL 2) es como usar (b*4)
+				 *pixel=vga_buffer(a,b)
 			Next
 		Next
 		'End If
+		
+		'Wait &h3da, &h8 'Old Qbasic way of waiting for the monitor's vsync
+		'ScreenSync 'FreeBASIC way of accomplishing the same thing
+
 	ScreenUnLock
 	ScreenCopy 
 End Sub
@@ -43,8 +50,8 @@ End Sub
 
 ' puertos entrada salida genericos
 Sub svga_out(ByVal addr As UShort , ByVal valor As UByte ) 
-        Dim As Integer c 
-        Dim As UByte o 
+        Dim As Integer c =Any
+        Dim As UByte o =Any
 
    'Print #5," -- SVGA OUT ";Hex(addr,4);" ";Hex(Valor,2);" ";Hex(CS1,4);":";Hex(pc,4);" ";Hex(svgawbank,8)
 
@@ -188,7 +195,7 @@ end Sub
 
 ' puertos entrada salida genericos
 Function svga_in(ByVal addr As UShort ) As UByte 
-        Dim As UByte  temp 
+        Dim As UByte  temp =Any
         
   'If (addr<>&h3da) And (addr<>&h3ba) Then Print #5," -- SVGA IN ";Hex(addr,4)
 
@@ -241,8 +248,8 @@ End Function
 
 
 Sub svga_recalctimings() 
-        Dim As double crtcconst 
-        Dim As Integer temp 
+        Dim As double crtcconst =Any
+        Dim As Integer temp =Any
         
         svga_vtotal=crtc(6) 
         svga_dispend=crtc(&h12) 
@@ -294,12 +301,12 @@ Sub svga_recalctimings()
 End Sub
 
 Sub svga_poll() 
-        Dim As UByte chr0,dat,attr 
-        Dim As ULong charaddr 
-        Dim As Integer x,xx 
-        Dim As ULong fg,bg 
-        Dim As Integer offset 
-        Dim As UByte edat(4) 
+        Dim As UByte chr0=Any,dat=any,attr = any
+        Dim As ULong charaddr =Any
+        Dim As Integer x=any,xx=Any 
+        Dim As ULong fg=any,bg=Any 
+        Dim As Integer offset=Any
+        Dim As UByte edat(4)=Any 
         Dim As integer drawcursor=0 
 
         if (linepos=0) Then 
@@ -672,7 +679,7 @@ Sub svga_poll()
                         if (fullchange) Then fullchange-=1 
                 EndIf
                                
-                if (vc=svga_vsyncstart) Then 
+                If (vc=svga_vsyncstart) Then 
                         svga_dispon=0 
                         cgastat = cgastat Or 8 
                         if (seqregs(1) And 8) Then 
@@ -761,7 +768,7 @@ End Sub
 
 ' accesos a memoria de video VRAM
 Sub svga_write(ByVal addr As ULong , ByVal valor As UByte ) 
-        Dim As UByte valora,valorb,valorc,valord,wm
+        Dim As UByte valora=any,valorb=any,valorc=any,valord=any,wm=Any
         Dim As Integer writemask2 = writemask 
  
         cycles -= video_timing_b 
@@ -927,8 +934,8 @@ Sub svga_write(ByVal addr As ULong , ByVal valor As UByte )
 end Sub
 
 Function svga_read(ByVal addr As ULong ) As UByte 
-        Dim As UByte temp,temp2,temp3,temp4 
-        Dim As ULong addr2 
+        Dim As UByte temp=Any,temp2=any,temp3=any,temp4=Any 
+        Dim As ULong addr2 =Any
 
         cycles -= video_timing_b 
         'cycles_lost += video_timing_b 

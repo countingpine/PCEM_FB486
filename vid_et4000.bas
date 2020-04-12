@@ -2,16 +2,16 @@
 
 Declare Sub et4000_recalcmapping()  
 
-Dim Shared as Integer unk_state=0
-Dim Shared as uByte unk_ctrl
+static shared As Integer unk_state=0
+static shared As uByte unk_ctrl
 
 Sub unk_ramdac_out(ByVal addr As UShort , ByVal valor As UByte ) 
-        Select Case As const (addr)
+        Select Case As Const(addr)
         	Case &h3C6 
                 if (unk_state = 4) Then 
                         unk_state = 0 
                         unk_ctrl = valor 
-                        Select Case As const ((valor And 1) Or ((valor And &hE0) Shr 4))
+                        Select Case As Const((valor And 1) Or ((valor And &hE0) Shr 4))
                         	Case 0, 1, 2, 3 
                                 bpp = 8 
 
@@ -38,7 +38,7 @@ Sub unk_ramdac_out(ByVal addr As UShort , ByVal valor As UByte )
 End Sub
 
 Function unk_ramdac_in(ByVal addr As UShort ) As UByte 
-        Select Case As const (addr)
+        Select Case As Const(addr)
         	Case &h3C6 
                 if (unk_state = 4) Then 
                         unk_state = 0 
@@ -56,7 +56,7 @@ End Function
 
 
 Sub et4000_out(ByVal addr As UShort , ByVal valor As UByte ) 
-        Dim As UByte  old
+        Dim As UByte old=any
         
         'Print #5,"  ET4000 out ";Hex(addr,4);" ";Hex(valor,2);" ";(svga_miscout And 1);
         If (((addr And &hFFF0) = &h3D0) Or ((addr And &hFFF0) = &h3B0)) And ((svga_miscout And 1)=0) Then addr = addr Xor &h60
@@ -103,12 +103,12 @@ Sub et4000_out(ByVal addr As UShort , ByVal valor As UByte )
 End Sub
 
 Function et4000_in(ByVal addr As UShort ) As UByte 
-        Dim As UByte  temp 
+        Dim As UByte temp =Any
 
         'If (addr<>&h3da) And (addr<>&h3ba) Then Print #5,"   IN ET4000 ";Hex(addr,4);" ";(svga_miscout And 1);
         If (((addr And &hFFF0) = &h3D0) Or ((addr And &hFFF0) = &h3B0)) And ((svga_miscout And 1)=0) Then addr = addr Xor &h60
 
-        Select Case As Const (addr)
+        Select Case As Const(addr)
         	case &h3C5 
                 if (seqaddr And &hF)=7 Then return seqregs(seqaddr And &hF) Or 4 
               
@@ -138,7 +138,7 @@ Sub et4000_recalctimings()
         if svga_rowoffset=0 Then svga_rowoffset=&h100 
         if crtc(&h3F) And 1 Then svga_htotal+=256 
         if attrregs(&h16) And &h20 Then svga_hdisp = svga_hdisp Shl 1 
-        Select Case As Const ((svga_miscout Shr 2) And 3)  Or  ((crtc(&h34) Shl 1) And 4)
+        Select Case As Const((svga_miscout Shr 2) And 3)  Or  ((crtc(&h34) Shl 1) And 4)
         	case 0, 1
         		Exit Sub
         	case 3  

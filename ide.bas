@@ -12,49 +12,49 @@ Declare Function readidew(ide_board As Integer ) As UShort
 Declare Sub callbackide(ide_board As Integer )  
 
 
-Dim Shared as Integer ideboard
-Dim Shared as Integer idecallback(2)'={0,0}
-Dim Shared as Integer idetimes=0
-Dim Shared as Integer times30=0
-Dim Shared as Integer toctimes=0
+static shared As Integer ideboard
+static shared As Integer idecallback(0 To 1)'={0,0}
+static shared As Integer idetimes=0
+static shared As Integer times30=0
+static shared As Integer toctimes=0
 
-Dim Shared As Integer sec_ide ' direccion del sector a leer en el HD
-Dim Shared As String sec_sa ' para leer dos bytes del HD
+static shared As Integer sec_ide ' direccion del sector a leer en el HD
+static shared As String sec_sa ' para leer dos bytes del HD
                      sec_sa="  "
 
-'Dim Shared as Integer cur_ide(2)
+'static shared as Integer cur_ide(2)
 
-#define IDE_TIME 5
+Const IDE_TIME =5
 
 'Bits of atastat 
-#Define ERR_STAT &h01
-#Define DRQ_STAT &h08 /' Data request '/
-#Define DSC_STAT &h10
-#Define SERVICE_STAT &h10
-#Define READY_STAT &h40
-#Define BUSY_STAT &h80
+Const ERR_STAT =&h01
+Const DRQ_STAT =&h08 /' Data request '/
+Const DSC_STAT =&h10
+Const SERVICE_STAT =&h10
+Const READY_STAT =&h40
+Const BUSY_STAT =&h80
 
 ' Bits of error
-#define ABRT_ERR &h04 /' Command aborted '/
-#define MCR_ERR &h08 /' Media change request '/
+Const ABRT_ERR =&h04 /' Command aborted '/
+Const MCR_ERR =&h08 /' Media change request '/
 
 /' ATA Commands '/
-#define WIN_SRST &h08 /' ATAPI Device Reset '/
-#define WIN_RECAL &h10
-#define WIN_RESTORE &h10 ' WIN_RECAL
-#define WIN_READ &h20 /' 28-Bit Read '/
-#define WIN_READ_NORETRY &h21 /' 28-Bit Read - no retry'/
-#define WIN_WRITE &h30 /' 28-Bit Write '/
-#define WIN_WRITE_NORETRY &h31 /' 28-Bit Write '/
-#define WIN_VERIFY &h40 /' 28-Bit Verify '/
-#define WIN_FORMAT &h50
-#define WIN_SEEK &h70
-#define WIN_DRIVE_DIAGNOSTICS &h90 /' Execute Drive Diagnostics '/
-#define WIN_SPECIFY &h91 /' Initialize Drive Parameters '/
-#define WIN_PACKETCMD &hA0 /' Send a packet command. '/
-#define WIN_PIDENTIFY &hA1 /' Identify ATAPI device '/
-#define WIN_SETIDLE1 &hE3
-#define WIN_IDENTIFY &hEC /' Ask drive to identify itself '/
+Const WIN_SRST =&h08 /' ATAPI Device Reset '/
+Const WIN_RECAL =&h10
+Const WIN_RESTORE =&h10 ' WIN_RECAL
+Const WIN_READ =&h20 /' 28-Bit Read '/
+Const WIN_READ_NORETRY =&h21 /' 28-Bit Read - no retry'/
+Const WIN_WRITE =&h30 /' 28-Bit Write '/
+Const WIN_WRITE_NORETRY =&h31 /' 28-Bit Write '/
+Const WIN_VERIFY =&h40 /' 28-Bit Verify '/
+Const WIN_FORMAT =&h50
+Const WIN_SEEK =&h70
+Const WIN_DRIVE_DIAGNOSTICS =&h90 /' Execute Drive Diagnostics '/
+Const WIN_SPECIFY =&h91 /' Initialize Drive Parameters '/
+Const WIN_PACKETCMD =&hA0 /' Send a packet command. '/
+Const WIN_PIDENTIFY =&hA1 /' Identify ATAPI device '/
+Const WIN_SETIDLE1 =&hE3
+Const WIN_IDENTIFY =&hEC /' Ask drive to identify itself '/
 
 enum 
 		 IDE_NONE  = 0,
@@ -75,13 +75,13 @@ Type _IDE
      As Integer packetstatus
      As Integer Reset0
      As String*256 hdfile ' nombre del fichero a cargar
-     As UShort buffer(65536)
+     As UShort buffer(0 To &hFFFF)
      As Integer irqstat
      As Integer service
      As Integer lba
      As ulongint lba_addr
 End Type
-Dim Shared ide As _IDE
+static shared ide As _IDE
 
 
 
@@ -110,7 +110,7 @@ End Sub
 
  ' añade espacios al final de una cadena, hasta llegar a la longitud solicitada
 Sub ide_padstr(str0 As UShort ptr , src As String , len0 As Integer ) 
-	Dim As Integer i, v1,v2 ,x
+	Dim As Integer i = any, v1 = any,v2 = any ,x = Any
 	x=0
 	for i = 0 To len0-1 Step 2
 		if (i<Len(src)) Then
@@ -130,7 +130,7 @@ End Sub
 
 'Fill in ide.buffer with the output of the "IDENTIFY DEVICE" command
 Sub ide_identify()'IDE as _IDE ) 
-	Dim i As Integer
+	Dim i As Integer = Any
 	For i=0 To 511
 	  ide.buffer(i)=0
 	Next
@@ -388,7 +388,7 @@ End Function
 
 Function readidew(ide_board As Integer ) As UShort 
         'Dim As _IDE ide = ide_drives'(cur_ide(ide_board))
-        Dim As UShort  temp 
+        Dim As UShort temp = any
         
         temp = ide.buffer(ide.pos0 Shr 1)
         
@@ -418,8 +418,8 @@ End Function
 
 Sub callbackide(ide_board As Integer ) 
         'Dim As _IDE ide = ide_drives'(cur_ide(ide_board))
-        Dim As ulongint ideaddr 
-        Dim As Integer c 
+        Dim As ulongint ideaddr = any
+        Dim As Integer c = any
         'ext_ide = ide ' esta no parece que se use
 
         if (ide.command0=&h30) Then times30+=1 
@@ -536,8 +536,8 @@ Sub callbackide(ide_board As Integer )
         case WIN_SPECIFY  /' Initialize Drive Parameters '/
                 'if (IDE_DRIVE_IS_CDROM(ide)) Then goto abort_cmd 
                 
-                ' OJO: esto coge parametros de la BIOS (me imagino), per lo hace mal y coge ceros, y falla el HD
-                ' por eso, los anulo por ahora, para que use los que yo pngo al cargar el HD
+                ' OJO: esto coge parametros de la BIOS (me imagino), pero lo hace mal y coge ceros, y falla el HD
+                ' por eso, los anulo por ahora, para que use los que yo pongo al cargar el HD
 	                'ide.spt=ide.secount 
 	                'ide.hpc=ide.head+1 
 	                ide.secount=63'ide.spt

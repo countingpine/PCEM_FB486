@@ -1,9 +1,9 @@
 
 
 ' raton serie
-Dim Shared as Integer oldb=0
+static shared As Integer oldb=0
 Sub mouse_serial_poll(x As Integer , y As Integer , b As Integer ) 
-        Dim As UByte  mousedat(3) 
+        Dim As UByte  mousedat(3) =Any
        
         
         If (serial.ier And 1)=0 Then return 
@@ -45,10 +45,10 @@ Sub mouse_serial_rcr()
 End Sub
 
 
-Dim Shared As integer pollmouse_delay = 2
+static shared As integer pollmouse_delay = 2
 Sub mouse_poll()
-        Dim As integer x,y,mouse_b, relx, rely,xx,yy
-        Static As Integer oldx,oldy
+        Dim As integer x=any,y=any,mouse_b=any, relx=any, rely=any,xx=any,yy=Any
+        Static As Integer oldx=any,oldy=Any
         
         pollmouse_delay-=1
         if (pollmouse_delay) Then Return

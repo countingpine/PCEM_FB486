@@ -1,8 +1,8 @@
 
 ' "modoplist"
-Dim shared oplist(&hFF) as String
+static shared oplist(&hFF) as String
 
-	Dim Shared As String cad
+	static shared As String cad
 Declare Sub dumpregs() 
 Sub printdebug()
 	Dim As Long a,b,d,f,g,x,y,c
@@ -20,8 +20,8 @@ Sub printdebug()
 	
 	'If cs1=&h24B8 And pc=&h0800 Then deb=2
    ' If cs1=&h25e9 And pc=&h00e8 Then deb=4	
-	'If pc=&hf5014 Then deb=2'If deb=0 Then deb=5 Else deb=2
-	'If pc=&hf5d21 Then If deb=0 Then deb=5 Else deb=2
+	'If pc=&hf5014 Then deb=2''if deb=0 Then deb=5 Else deb=2
+	'If pc=&hf5d21 Then 'if deb=0 Then deb=5 Else deb=2
 	'If ESI=&hd8e921eb Then deb=2
 
 	'If (CS1*16+pc)=&hc0100 Then deb=2
@@ -32,18 +32,18 @@ Sub printdebug()
 	'cadaxveces+=1
 	'If cadaxveces>40 Then 		
 
-	If deb=1 Or deb=2 Then
+	if deb=1 Or deb=2 Then
 		While InKey<>"":Wend ' necesario, sino, se salta una linea la primera vez que entra
 		'a=CsrLin
 		'b=Pos
 		'If a>31 Then Cls:a=1:b=1 
 		Locate 30,1
-		Color RGB(255,0,0):print "CS:PC="+Hex$(cs0,8)+":"+Hex$(pc,8)+" -> "+Hex(cs0+pc,8)+"="+Hex$(opcode+use32,4)+" "+Hex$(rmdat,4)+" "+ mid$(oplist(opcode), 3);"                    "
-		Color RGB(128,0,128):print "EAX=" + Hex$(EAX, 8) + "  EBX=" + Hex$(EBX, 8) + "  ECX=" + hex$(ECX, 8) + "  EDX=" + hex$(EDX, 8)
-		Color RGB(255,128,0):print "ESP=" + Hex$(ESP, 8) + "  EBP=" + Hex$(EBP, 8) + "  ESI=" + hex$(ESI, 8) + "  EDI=" + hex$(EDI, 8)
+		Color RGB(255,0,0)  :print "CS:PC="+hex(cs0,8)+":"+hex(pc,8)+" -> "+Hex(cs0+pc,8)+"="+hex(opcode+use32,4)+" "+Hex(rmdat,4)+" "+ mid(oplist(opcode), 3);"                    "
+		Color RGB(128,0,128):print "EAX=" + hex(EAX, 8) + "  EBX=" + hex(EBX, 8) + "  ECX=" + hex(ECX, 8) + "  EDX=" + Hex(EDX, 8)
+		Color RGB(255,128,0):print "ESP=" + hex(ESP, 8) + "  EBP=" + hex(EBP, 8) + "  ESI=" + hex(ESI, 8) + "  EDI=" + Hex(EDI, 8)
 		Color RGB(255,255,0):print "SS0="+Hex(ss0,8);
-		Color RGB(0,70,255):Print "    SS=" + Hex$(SS1, 4) + "   CS=" + Hex$(CS1, 4) + "   DS=" + Hex$(DS1, 4) + "   ES=" + Hex$(ES1, 4)
-		Color RGB(0,255,0):Print "OP32:";Hex(op32,4);" USE32:";Hex(use32,4);" VM86:";IIf(eflags And VM_FLAG,"SI","NO");" PROT:";IIf(modoprotegido,"SI","NO");"  PILA=";IIf(stack32,"32:","16:");Hex(ss0+ESP,8)
+		Color RGB(0,70,255) :Print "    SS=" + hex(SS1, 4) + "   CS=" + hex(CS1, 4) + "   DS=" + hex(DS1, 4) + "   ES=" + Hex(ES1, 4)
+		Color RGB(0,255,0)  :Print "OP32:";Hex(op32,4);" USE32:";Hex(use32,4);" VM86:";IIf(eflags And VM_FLAG,"SI","NO");" PROT:";IIf(modoprotegido,"SI","NO");"  PILA=";IIf(stack32,"32:","16:");Hex(ss0+ESP,8)
 		' FLAGS
 		Color RGB(0,255,255):print "----VDITNZ-A-P-C"'  V:OVERFLOW D:DIR I:INT S:SIGN Z:ZERO A:AuxCarry P:PARITY C:CARRY"
 		print Bin(flags,16);" = ";hex(flags,4)
@@ -66,7 +66,7 @@ Sub printdebug()
 		End If
 
 		'dumpregs()
-	   If deb>1 Then Sleep
+	   'if deb>1 Then Sleep
 	   'Locate a,b
 	   Color RGB(128,128,128)
 		screencopy
@@ -122,14 +122,14 @@ Sub printdebug()
 	
 
 	
-	'If deb=3 Then ' directo a fichero
+	''if deb=3 Then ' directo a fichero
 	    'Open "depuracion.txt" For Append As 1
 		'print #1, "----------------------------"
-		'print #1, "CS:IP -> " + Hex$(savecs,4) + ":" + hex$(saveip,4) + " -> " + Hex(savecs*16+saveip,8) + "  " + hex$(opcode,2)+" "+ mid$(oplist(opcode), 3);"      "
-		'print #1, "  ax = " + Hex$(getreg16(regax), 4) + "      bx = " + Hex$(getreg16(regbx), 4) + "      cx = " + hex$(getreg16(regcx), 4) + "      dx = " + hex$(getreg16(regdx), 4)
-		'print #1, "  cs = " + Hex$(regcs, 4) + "      ss = " + Hex$(regss, 4) + "      di = " + Hex$(regdi, 4) + "      bp = " + Hex$(regbp, 4)
-		'print #1, "  ds = " + hex$(regds, 4) + "      es = " + Hex$(reges, 4) + "      si = " + Hex$(regsi, 4) + "      sp = " + Hex$(regsp, 4)
-		'print #1, "  flags: cf=" + hex$(cf) + "    zf=" + hex$(zf) + "    sf=" + hex$(sf) + "    of=" + hex$(of) + "    if=" + hex$(ifl) + "    af=" + hex$(af) + "    df=" + hex$(df) + "    pf=" + hex$(pf)
+		'print #1, "CS:IP -> " + hex(savecs,4) + ":" + hex(saveip,4) + " -> " + Hex(savecs*16+saveip,8) + "  " + hex(opcode,2)+" "+ mid$(oplist(opcode), 3);"      "
+		'print #1, "  ax = " + hex(getreg16(regax), 4) + "      bx = " + hex(getreg16(regbx), 4) + "      cx = " + hex(getreg16(regcx), 4) + "      dx = " + hex(getreg16(regdx), 4)
+		'print #1, "  cs = " + hex(regcs, 4) + "      ss = " + hex(regss, 4) + "      di = " + hex(regdi, 4) + "      bp = " + hex(regbp, 4)
+		'print #1, "  ds = " + hex(regds, 4) + "      es = " + hex(reges, 4) + "      si = " + hex(regsi, 4) + "      sp = " + hex(regsp, 4)
+		'print #1, "  flags: cf=" + hex(cf) + "    zf=" + hex(zf) + "    sf=" + hex(sf) + "    of=" + hex(of) + "    if=" + hex(ifl) + "    af=" + hex(af) + "    df=" + hex(df) + "    pf=" + hex(pf)
 		'Close 1
 	'EndIf
 

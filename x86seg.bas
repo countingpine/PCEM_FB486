@@ -1,9 +1,9 @@
 
 
 
-' estos dos defines, son para permitir a WIN98 funcionar, segun el fuente original, pero sin probar.
-#Define SEL_ACCESSED 1
-#Define CS_ACCESSED  1
+' estas variables son para permitir a WIN98 funcionar, segun el fuente original, pero sin probar.
+const SEL_ACCESSED=1
+const CS_ACCESSED=1
 
 
 
@@ -82,7 +82,7 @@ Sub PUSHL(v As ULong )
 End Sub
 
 Function POPW() As UShort 
-        Dim As UShort  tempw 
+        Dim As UShort tempw =any
         if stack32 Then 
                 tempw=readmemw_386(ss0,ESP) 
                 if abrt then return 0 
@@ -96,7 +96,7 @@ Function POPW() As UShort
 End Function
 
 Function POPL() As ULong 
-        Dim As ULong  templ 
+        Dim As ULong  templ =any
         if stack32 Then 
                 templ=readmeml_386(ss0,ESP) 
                 if abrt then return 0 
@@ -120,13 +120,13 @@ End Function
 
 ' nota: esta rutina usa la estructura "x86seg" para la variable "S" y TOCA los valores , o sea, "S" sale cambiado
 Sub loadseg(seg As UShort ,s As x86seg) 
-        Dim As UShort segdat(4) 
-        Dim As ULong addr 
-        Dim As long dpl0
+        Dim As UShort segdat(4) =Any
+        Dim As ULong addr =Any
+        Dim As long dpl0=Any
 
         if (modoprotegido=1) And ((eflags And VM_FLAG)=0) Then 
 
-       			 If deb=5 Then Print #5,"Load seg:";Hex(seg,4)
+       			 ''if deb=5 Then Print #5,"Load seg:";Hex(seg,4)
        			 
                 if (seg And inv(3))=0 Then 
                         if @s=@_ss Then 
@@ -178,7 +178,7 @@ Sub loadseg(seg As UShort ,s As x86seg)
                             x86gpf(seg And inv(3)) 
                             Exit sub  
                         EndIf
-                        Select Case As Const (segdat(2) Shr 8) And &h1F
+                        Select Case As Const(segdat(2) Shr 8) And &h1F
                         	Case &h12, &h13, &h16, &h17  /'r-w'/
                                 Exit Select 
                         	case Else 
@@ -197,9 +197,9 @@ Sub loadseg(seg As UShort ,s As x86seg)
                            stack32=0 
                         EndIf
                 ElseIf @s<>@_cs Then 
-                			'if deb=5 Then print #5,"Seg data ", segdat(0), segdat(1), segdat(2), segdat(3) 
-                        'if deb=5 Then print #5,"Seg tipo ",segdat(2) And &h1F00
-                        Select Case As Const  ((segdat(2) Shr 8) And &h1F)
+                			''if deb=5 Then print #5,"Seg data ", segdat(0), segdat(1), segdat(2), segdat(3) 
+                        ''if deb=5 Then print #5,"Seg tipo ",segdat(2) And &h1F00
+                        Select Case As Const((segdat(2) Shr 8) And &h1F)
                         	 /'Data segments'/
                         	Case &h10, &h11, &h12, &h13 , _
                                 &h14, &h15, &h16, &h17 , _ 
@@ -220,7 +220,7 @@ Sub loadseg(seg As UShort ,s As x86seg)
                 EndIf
                 
 					if (segdat(2) And &h8000)=0 Then 
-					    'If deb=5 Then Print #5,"Load data seg not present "
+					    ''if deb=5 Then Print #5,"Load data seg not present "
 					    x86np(seg  And &hfffc)
 					    Exit sub  
 					EndIf
@@ -272,32 +272,32 @@ End Sub
 
 
 Sub loadcs(seg As UShort) 
-        Dim As UShort  segdat(4) 
-        Dim As ULong   addr 
-        Dim As Integer count 
-        Dim As UShort  oldss,oldsp 
+        Dim As UShort  segdat(4) =Any
+        Dim As ULong   addr =Any
+        Dim As Integer count =Any
+        Dim As UShort  oldss,oldsp =Any
 
 
         if (modoprotegido=1) And ((eflags And VM_FLAG)=0) Then
         	
-        	       If deb=5 Then Print #5,"Load CS ",seg
+        	       'if deb=5 Then Print #5,"Load CS ",seg
         	       
                 if (seg And inv(3))=0 Then 
-                        if deb=5 Then print #5,"Trying to load CS with NULO selector lcs" 
+                        'if deb=5 Then print #5,"Trying to load CS with NULO selector lcs" 
                         x86gpf(0) 
                         Exit sub  
                 EndIf
                 addr=seg And inv(7)
                 if (seg And 4) Then 
                         if addr>=ldt.limit Then 
-                                if deb=5 Then print #5,"Bigger than LDT limit   CS",seg,ldt.limit 
+                                'if deb=5 Then print #5,"Bigger than LDT limit   CS",seg,ldt.limit 
                                 x86gpf(seg And inv(3)) 
                                 Exit sub  
                         EndIf
                         addr+=ldt.base0 
                 else
                         if addr>=gdt.limit Then 
-                                if deb=5 Then print #5,"Bigger than GDT limit   CS",seg,gdt.limit
+                                'if deb=5 Then print #5,"Bigger than GDT limit   CS",seg,gdt.limit
                                 x86gpf(seg And inv(3)) 
                                 Exit sub  
                         EndIf
@@ -318,7 +318,7 @@ Sub loadcs(seg As UShort)
                         if (segdat(2) And &h400)=0 Then  /'not conforming'/
                                 if ((seg And 3)>CPL) Then 
                                         x86gpf(seg And inv(3)) 
-                                        if deb=5 Then print #5,"loadcs RPL > CPL ",segdat(2),seg,CPL,opcode
+                                        'if deb=5 Then print #5,"loadcs RPL > CPL ",segdat(2),seg,CPL,opcode
                                         Exit sub  
                                 EndIf
                                 if (CPL <> DPL) Then 
@@ -331,7 +331,7 @@ Sub loadcs(seg As UShort)
                                 Exit sub  
                         EndIf
                         if (segdat(2) And &h8000)=0 Then 
-                                if deb=5 Then print #5,"Load CS not present"
+                                'if deb=5 Then print #5,"Load CS not present"
                                 x86np(seg  And &hfffc)
                                 Exit sub  
                         EndIf
@@ -359,16 +359,16 @@ EndIf
                 else
                         /'System segment'/
                         if ((segdat(2) And &h8000)=0) Then 
-                                if deb=5 Then print #5,"Load CS system seg not present "
+                                'if deb=5 Then print #5,"Load CS system seg not present "
                                 x86np(seg  And &hfffc)
                                 Exit sub  
                         EndIf
-                        Select Case As Const  (segdat(2) And &hF00)
-                        	case Else 
-                                if deb=5 Then print #5,"Bad CS special descriptor ",opcode,rmdat,optype,segdat(2) And &hF00,seg 
+                        'Select Case(segdat(2) And &hF00)
+                        '	case Else 
+                                'if deb=5 Then print #5,"Bad CS special descriptor ",opcode,rmdat,optype,segdat(2) And &hF00,seg 
                                 x86gpf(seg And inv(3)) 
                                 Exit sub  
-                        End Select
+                        'End Select
                 EndIf
         else
                 _cs.base0=seg Shl 4 
@@ -384,33 +384,33 @@ EndIf
 End Sub
 
 Sub loadcsjmp(seg As UShort , oxpc As ULong ) 
-        Dim As UShort  segdat(4) 
-        Dim As ULong   addr 
-        Dim As Integer count 
-        Dim As UShort  oldss,oldsp 
-        Dim As UShort  tipo,seg2 
-        Dim As ULong   newpc 
+        Dim As UShort  segdat(4) =Any
+        Dim As ULong   addr =Any
+        Dim As Integer count =Any
+        Dim As UShort  oldss=Any,oldsp =any
+        Dim As UShort  tipo=any,seg2 =Any
+        Dim As ULong   newpc =Any
  
         If (modoprotegido=1) And ((eflags And VM_FLAG)=0) Then 
          	       
-                If deb=5 Then Print #5,"Load CS JMP revisar:",Hex(seg),Hex(oxpc)
+                'if deb=5 Then Print #5,"Load CS JMP revisar:",Hex(seg),Hex(oxpc)
 
                 if (seg And inv(3))=0 Then 
-                        if deb=5 Then print #5,"Trying to load CS with NULO selector lcsjmp" 
+                        'if deb=5 Then print #5,"Trying to load CS with NULO selector lcsjmp" 
                         x86gpf(0) 
                         Exit sub  
                 EndIf
                 addr=seg And inv(7)
                 if (seg And 4) Then 
                         if (addr>=ldt.limit) Then 
-                                if deb=5 Then print #5,"Bigger than LDT limit CS",seg,ldt.limit 
+                                'if deb=5 Then print #5,"Bigger than LDT limit CS",seg,ldt.limit 
                                 x86gpf(seg And inv(3)) 
                                 Exit sub  
                         EndIf
                         addr+=ldt.base0 
                 Else
                         if (addr>=gdt.limit) Then 
-                                if deb=5 Then print #5,"Bigger than GDT limit CS",seg,gdt.limit 
+                                'if deb=5 Then print #5,"Bigger than GDT limit CS",seg,gdt.limit 
                                 x86gpf(seg And inv(3)) 
                                 Exit sub  
                         EndIf
@@ -442,7 +442,7 @@ Sub loadcsjmp(seg As UShort , oxpc As ULong )
                                 Exit sub  
                         EndIf
                         if (segdat(2) And &h8000)=0 Then 
-                                if deb=5 Then print #5,"Load CS JMP not present "
+                                'if deb=5 Then print #5,"Load CS JMP not present "
                                 x86np(seg  And &hfffc) 
                                 Exit sub  
                         EndIf
@@ -469,7 +469,7 @@ EndIf
                 Else
                         /'System segment'/
                         if (segdat(2) And &h8000)=0 Then 
-                                if deb=5 Then print #5,"Load CS JMP system selector not present "
+                                'if deb=5 Then print #5,"Load CS JMP system selector not present "
                                 x86np(seg  And &hfffc)
                                 Exit sub  
                         EndIf
@@ -479,7 +479,7 @@ EndIf
                         else
                                 newpc=segdat(0) Or (segdat(3) Shl 16)
                         EndIf
-                        Select Case As Const  (tipo)
+                        Select Case As Const(tipo)
                         	Case &h400, &hC00  /'Call gate'/
                                 cgate32=(tipo And &h800) 
                                 ' al parecer, en C, "!CGATE" (o sea, NOT), vale 0 si CGATE<>0, y 1 si CGATE=0 !!!!!
@@ -493,27 +493,27 @@ EndIf
                                         return  
                                 EndIf
                                 if (segdat(2) And &h8000)=0 Then 
-                                        if deb=5 Then print #5,"Load CS JMP call gate  not present "
+                                        'if deb=5 Then print #5,"Load CS JMP call gate  not present "
                                         x86np(seg  And &hfffc) 
                                         Return 
                                 EndIf
                                 seg2=segdat(1) 
                                 if (seg2 And inv(3))=0 Then 
-                                        if deb=5 Then print #5,"Trying to load CS with NULO selector lcsjmpcg" 
+                                        'if deb=5 Then print #5,"Trying to load CS with NULO selector lcsjmpcg" 
                                         x86gpf(0) 
                                         return  
                                 EndIf
                                 addr=seg2 And inv(7)
                                 if (seg2 And 4) Then 
                                         if (addr>=ldt.limit) Then 
-                                                if deb=5 Then print #5,"Bigger than LDT limit   CSJ",seg2,gdt.limit 
+                                                'if deb=5 Then print #5,"Bigger than LDT limit   CSJ",seg2,gdt.limit 
                                                 x86gpf(seg2 And inv(3)) 
                                                 return  
                                         EndIf
                                         addr+=ldt.base0 
                                 else
                                         if (addr>=gdt.limit) Then 
-                                                if deb=5 Then print #5,"Bigger than GDT limit   CSJ",seg2,gdt.limit 
+                                                'if deb=5 Then print #5,"Bigger than GDT limit   CSJ",seg2,gdt.limit 
                                                 x86gpf(seg2 And inv(3)) 
                                                 Exit sub  
                                         EndIf
@@ -533,14 +533,14 @@ EndIf
                                         Return  
                                 EndIf
                                 if (segdat(2) And &h8000)=0 Then 
-                                        if deb=5 Then print #5,"Load CS JMP from call gate notpresent"
+                                        'if deb=5 Then print #5,"Load CS JMP from call gate notpresent"
                                         x86np(seg  And &hfffc) 
                                         Return  
                                 EndIf
                                 Select Case As Const (segdat(2) And &h1F00)
                                 	 Case &h1800, &h1900, &h1A00, &h1B00  /'Non-conforming code'/
                                         if (DPL > CPL) Then 
-                                                if deb=5 Then print #5,"Call gate DPL > CPL" 
+                                                'if deb=5 Then print #5,"Call gate DPL > CPL" 
                                                 x86gpf(seg2 And inv(3)) 
                                                 Return  
                                         EndIf
@@ -584,7 +584,7 @@ EndIf
 ' --------------------------------------------------------------------------------
                                         Exit Select 
                                 	 Case Else 
-                                        if deb=5 Then print #5,"JMP Call gate bad segment tipo" 
+                                        'if deb=5 Then print #5,"JMP Call gate bad segment tipo" 
                                         x86gpf(seg2 And inv(3)) 
                                         Return  
                                 End Select
@@ -599,7 +599,7 @@ EndIf
                                 Return  
                                 
                         	case Else 
-                                if deb=5 Then print #5,"Bad JMP CS special descriptor ",opcode,rmdat,optype,segdat(2) And &hF00,seg 
+                                'if deb=5 Then print #5,"Bad JMP CS special descriptor ",opcode,rmdat,optype,segdat(2) And &hF00,seg 
                                 x86gpf(0) 
                                 Return  
                                 
@@ -619,36 +619,36 @@ EndIf
 End Sub
 
 Sub loadcscall(seg As UShort ) 
-        Dim As UShort seg2 
-        Dim As UShort segdat(4),segdat2(4),newss 
-        Dim As ULong  addr,oldssbase=ss0, oaddr 
-        Dim As ULong  newpc 
-        Dim As Integer  count 
+        Dim As UShort seg2 =Any
+        Dim As UShort segdat(4)=any,segdat2(4)=any,newss=Any 
+        Dim As ULong  addr=Any,oldssbase=ss0, oaddr =any
+        Dim As ULong  newpc=Any 
+        Dim As Integer  count=Any
         Dim As UShort oldcs=CPL 
-        Dim As ULong  oldss,oldsp,newsp,oldpc, oldsp2 
-        Dim As Integer  tipo 
-        Dim As UShort tempw 
+        Dim As ULong  oldss=Any,oldsp=any,newsp=any,oldpc=any, oldsp2=Any 
+        Dim As Integer  tipo=Any 
+        Dim As UShort tempw =Any
         
         if (modoprotegido=1) And ((eflags And VM_FLAG)=0) Then 
         	
-                If deb=5 Then Print #5,"LOAD_CS_CALL revisar",seg 
+                'if deb=5 Then Print #5,"LOAD_CS_CALL revisar",seg 
                 
                 if (seg And inv(3))=0 Then 
-                        if deb=5 Then print #5,"Trying to load CS with NULO selector lcscall" 
+                        'if deb=5 Then print #5,"Trying to load CS with NULO selector lcscall" 
                         x86gpf(0) 
                         Return  
                 EndIf
                 addr=seg And inv(7)
                 if (seg And 4) Then 
                         if (addr>=ldt.limit) Then 
-                                if deb=5 Then print #5,"Bigger than LDT limit   CSC",seg,gdt.limit
+                                'if deb=5 Then print #5,"Bigger than LDT limit   CSC",seg,gdt.limit
                                 x86gpf(seg And inv(3)) 
                                 Return  
                         EndIf
                         addr+=ldt.base0 
                 else
                         if (addr>=gdt.limit) Then 
-                                if deb=5 Then print #5,"Bigger than GDT limit   CSC",seg,gdt.limit
+                                'if deb=5 Then print #5,"Bigger than GDT limit   CSC",seg,gdt.limit
                                 x86gpf(seg And inv(3)) 
                                 Return  
                         EndIf
@@ -671,28 +671,28 @@ Sub loadcscall(seg As UShort )
                         newpc=segdat(0) Or (segdat(3) Shl 16)
                 EndIf
                 
-                if deb=5 Then print #5,"Code seg call ",seg,segdat(0),segdat(1),segdat(2) 
+                'if deb=5 Then print #5,"Code seg call ",seg,segdat(0),segdat(1),segdat(2) 
 
                 if (segdat(2) And &h1000) Then 
                         if (segdat(2) And &h400)=0 Then /'not conforming'/
                                 if (seg And 3)>CPL Then 
-                                        if deb=5 Then print #5,"not conforming, RPL > CPL " 
+                                        'if deb=5 Then print #5,"not conforming, RPL > CPL " 
                                         x86gpf(seg And inv(3)) 
                                         Return  
                                 EndIf
                                 if (CPL <> DPL) Then 
-                                        if deb=5 Then print #5,"not conforming, CPL <> DPL ",CPL,DPL 
+                                        'if deb=5 Then print #5,"not conforming, CPL <> DPL ",CPL,DPL 
                                         x86gpf(seg And inv(3)) 
                                         Return  
                                 EndIf
                         EndIf
                         if (CPL < DPL) Then 
-                                if deb=5 Then print #5,"CPL < DPL" 
+                                'if deb=5 Then print #5,"CPL < DPL" 
                                 x86gpf(seg And inv(3)) 
                                 Return  
                         EndIf
                         if (segdat(2) And &h8000)=0 Then 
-                                if deb=5 Then print #5,"Load CS call not present"
+                                'if deb=5 Then print #5,"Load CS call not present"
                                 x86np(seg  And &hfffc)
                                 return  
                         EndIf
@@ -721,13 +721,13 @@ EndIf
                         _cs.access0=segdat(2) Shr 8 
                         if (CPL=3)  And  (oldcpl<>3) Then flushmmucache_cr3() 
                         use32=IIf((segdat(3) And &h40),&h300,0)
-                        if deb=5 Then print #5,"load cs Complete!" 
+                        'if deb=5 Then print #5,"load cs Complete!" 
                 else
                         tipo=segdat(2) And &hF00 
-                        if deb=5 Then print #5,"load cs tipo ",tipo 
-                        Select Case As Const  (tipo)
+                        'if deb=5 Then print #5,"load cs tipo ",tipo 
+                        Select Case As Const(tipo)
                         	case &h400, &hC00  /'Call gate'/ /'386 Call gate'/
-                                if deb=5 Then print #5,"Callgate ", pc 
+                                'if deb=5 Then print #5,"Callgate ", pc 
                                 cgate32=(tipo And &h800) 
                                 ' al parecer, en C, "!CGATE" (o sea, NOT), vale 0 si CGATE<>0, y 1 si CGATE=0 !!!!!
                                 cgate16= iif(cgate32,0,1) 
@@ -740,28 +740,28 @@ EndIf
                                         Exit sub  
                                 EndIf
                                 if (segdat(2) And &h8000)=0 Then 
-                                    if deb=5 Then print #5,"Call gate not present "
+                                    'if deb=5 Then print #5,"Call gate not present "
                                     x86np(seg  And &hfffc)
                                     Exit sub  
                                 EndIf
                                 seg2=segdat(1) 
-                                if deb=5 Then print #5,"New address  ", seg2, newpc 
+                                'if deb=5 Then print #5,"New address  ", seg2, newpc 
                                 if (seg2 And inv(3))=0 Then 
-                                    if deb=5 Then print #5,"Trying to load CS with NULO selector lcscallcg" 
+                                    'if deb=5 Then print #5,"Trying to load CS with NULO selector lcscallcg" 
                                     x86gpf(0) 
                                     Exit sub  
                                 EndIf
                                 addr=seg2 And inv(7)
                                 if (seg2 And 4) Then 
                                         if (addr>=ldt.limit) Then 
-                                                If deb=5 Then print #5,"Bigger than LDT limit   CSC ",seg2,gdt.limit 
+                                                'if deb=5 Then print #5,"Bigger than LDT limit   CSC ",seg2,gdt.limit 
                                                 x86gpf(seg2 And inv(3)) 
                                                 Exit sub  
                                         EndIf
                                         addr+=ldt.base0 
                                 else
                                         if (addr>=gdt.limit) Then 
-                                                If deb=5 Then print #5,"Bigger than GDT limit   CSC ",seg2,gdt.limit 
+                                                'if deb=5 Then print #5,"Bigger than GDT limit   CSC ",seg2,gdt.limit 
                                                 x86gpf(seg2 And inv(3)) 
                                                 Exit sub  
                                         EndIf
@@ -776,17 +776,17 @@ EndIf
                                 cpl_override=0
                                 if abrt Then return  
                                  
-                                if deb=5 Then print #5,"Code seg2 call ",seg2,segdat(0),segdat(1),segdat(2) 
+                                'if deb=5 Then print #5,"Code seg2 call ",seg2,segdat(0),segdat(1),segdat(2) 
                                 if (DPL > CPL) Then 
                                         x86gpf(seg2 And inv(3)) 
                                         Exit sub  
                                 EndIf
                                 if (segdat(2) And &h8000)=0 Then 
-                                    if deb=5 Then print #5,"Call gate CS not present"
+                                    'if deb=5 Then print #5,"Call gate CS not present"
                                     x86np(seg2  And &hfffc) 
                                     Exit sub  
                                 EndIf
-                                Select Case As Const  (segdat(2) And &h1F00)
+                                Select Case As Const(segdat(2) And &h1F00)
                                 	Case &h1800, &h1900, &h1A00, &h1B00  /'Non-conforming code'/
                                         if (DPL < CPL) Then 
                                                 oaddr = addr 
@@ -808,23 +808,23 @@ EndIf
                                                 cpl_override=0 
                                                 if abrt Then return  
                                                  
-                                                if deb=5 Then print #5,"New stack  ",newss,newsp 
+                                                'if deb=5 Then print #5,"New stack  ",newss,newsp 
                                                 if (newss And inv(3))=0 Then 
-                                                        If deb=5 Then print #5,"Call gate loading NULO SS" 
+                                                        'if deb=5 Then print #5,"Call gate loading NULO SS" 
                                                         x86ts(newss And inv(3)) 
                                                         Exit sub  
                                                 EndIf
                                                 addr=newss And inv(7)
                                                 if (newss And 4) Then 
                                                         if (addr>=ldt.limit) Then 
-                                                                If deb=5 Then print #5,"Bigger than LDT limit  CSC SS",newss,addr,ldt.limit 
+                                                                'if deb=5 Then print #5,"Bigger than LDT limit  CSC SS",newss,addr,ldt.limit 
                                                                 x86ts(newss And inv(3)) 
                                                                 Exit sub  
                                                         EndIf
                                                         addr+=ldt.base0 
                                                 else
                                                         if (addr>=gdt.limit) Then 
-                                                                If deb=5 Then print #5,"Bigger than GDT limit CSC",newss,gdt.limit 
+                                                                'if deb=5 Then print #5,"Bigger than GDT limit CSC",newss,gdt.limit 
                                                                 x86ts(newss And inv(3)) 
                                                                 Exit sub  
                                                         EndIf
@@ -832,7 +832,7 @@ EndIf
                                                 EndIf
                                                 
                                                 cpl_override=1 
-                                                if deb=5 Then print #5,"Read stack seg" 
+                                                'if deb=5 Then print #5,"Read stack seg" 
                                                 segdat2(0)=readmemw_386(0,addr) 
                                                 segdat2(1)=readmemw_386(0,addr+2) 
                                                 segdat2(2)=readmemw_386(0,addr+4) 
@@ -840,19 +840,19 @@ EndIf
                                                 cpl_override=0
                                                 if abrt Then return  
                                                  
-                                                if deb=5 Then print #5,"Read stack seg done" 
+                                                'if deb=5 Then print #5,"Read stack seg done" 
                                                 if ((newss  And 3) <> DPL)  Or  (DPL2 <> DPL) Then 
-                                                    if deb=5 Then print #5,"Call gate loading SS with wrong permissions ", newss, seg2, DPL, DPL2, segdat(2), segdat2(2)
+                                                    'if deb=5 Then print #5,"Call gate loading SS with wrong permissions ", newss, seg2, DPL, DPL2, segdat(2), segdat2(2)
                                                     x86ts(newss And inv(3)) 
                                                     Exit sub  
                                                 EndIf
                                                 if (segdat2(2) And &h1A00)<>&h1200 Then 
-                                                    if deb=5 Then print #5,"Call gate loading SS wrong tipo" 
+                                                    'if deb=5 Then print #5,"Call gate loading SS wrong tipo" 
                                                     x86ts(newss And inv(3)) 
                                                     Exit sub  
                                                 EndIf
                                                 if (segdat2(2) And &h8000)=0 Then  
-                                                    if deb=5 Then print #5,"Call gate loading SS not present"
+                                                    'if deb=5 Then print #5,"Call gate loading SS not present"
                                                     x86np( newss  And &hfffc )
                                                     Exit sub  
                                                 EndIf
@@ -872,7 +872,7 @@ EndIf
                                                 _ss.base0 = _ss.base0 Or ((segdat2(2) And &hFF) Shl 16) 
                                                 _ss.base0 = _ss.base0 Or ((segdat2(3) Shr 8) Shl 24)  ' antes ---> if (is386) Then 
                                                 _ss.access0=segdat2(2) Shr 8 
-                                                if deb=5 Then print #5,"Set access 1" 
+                                                'if deb=5 Then print #5,"Set access 1" 
 ' --------------------------------------------------------------------------------                                               
 if SEL_ACCESSED Then                                                
                cpl_override = 1 
@@ -890,7 +890,7 @@ EndIf
                                                 if (CPL=3)  And  (oldcpl<>3) Then flushmmucache_cr3() 
                                                 use32=IIf((segdat(3) And &h40),&h300,0) 
                                                 pc=newpc 
-                                                if deb=5 Then print #5,"Set access 2" 
+                                                'if deb=5 Then print #5,"Set access 2" 
 ' --------------------------------------------------------------------------------                                                
 if CS_ACCESSED Then
             cpl_override = 1 
@@ -898,12 +898,12 @@ if CS_ACCESSED Then
             cpl_override = 0 
 EndIf
 ' --------------------------------------------------------------------------------
-                                                if deb=5 Then print #5,"tipo ",tipo
+                                                'if deb=5 Then print #5,"tipo ",tipo
                                                 if (tipo=&hC00) Then 
                                                         PUSHL(oldss) 
                                                         PUSHL(oldsp2) 
                                                         if abrt Then 
-                                                                If deb=5 Then print #5,"ABRT PUSHL" 
+                                                                'if deb=5 Then print #5,"ABRT PUSHL" 
                                                                 SS1 = oldss 
                                                                 ESP = oldsp2 
                                                                 Exit sub  
@@ -913,7 +913,7 @@ EndIf
                                                                         count-=1 
                                                                         PUSHL(readmeml_386(oldssbase,oldsp+(count*4))) 
                                                                         if abrt Then 
-                                                                                If deb=5 Then print #5,"ABRT COPYL" 
+                                                                                'if deb=5 Then print #5,"ABRT COPYL" 
                                                                                 SS1 = oldss 
                                                                                 ESP = oldsp2 
                                                                                 Exit sub  
@@ -921,25 +921,25 @@ EndIf
                                                                 Wend
                                                         EndIf
                                                 else
-                                                        if deb=5 Then print #5,"Stack ",SP
+                                                        'if deb=5 Then print #5,"Stack ",SP
                                                         PUSHW(oldss) 
-                                                        if deb=5 Then print #5,"Write SS to  ",SS1,SP 
+                                                        'if deb=5 Then print #5,"Write SS to  ",SS1,SP 
                                                         PUSHW(oldsp2) 
                                                         if abrt Then 
-                                                            if deb=5 Then print #5,"ABRT PUSHW" 
+                                                            'if deb=5 Then print #5,"ABRT PUSHW" 
                                                             SS1 = oldss 
                                                             ESP = oldsp2 
                                                             Exit sub  
                                                         EndIf
-                                                        if deb=5 Then print #5,"Write SP to  ",SS1,SP 
+                                                        'if deb=5 Then print #5,"Write SP to  ",SS1,SP 
                                                         if (count) Then 
                                                                 while (count)
                                                                         count-=1 
                                                                         tempw=readmemw_386(oldssbase,(oldsp And &hFFFF)+(count*2)) 
-                                                                        if deb=5 Then print #5,"PUSH ",tempw 
+                                                                        'if deb=5 Then print #5,"PUSH ",tempw 
                                                                         PUSHW(tempw) 
                                                                         if abrt Then 
-                                                                            if deb=5 Then print #5,"ABRT COPYW" 
+                                                                            'if deb=5 Then print #5,"ABRT COPYW" 
                                                                             SS1 = oldss 
                                                                             ESP = oldsp2 
                                                                             Exit sub  
@@ -993,13 +993,13 @@ EndIf
 ' --------------------------------------------------------------------------------
                                         Exit Select 
                                 	Case else 
-                                        If deb=5 Then print #5,"Call gate bad segment tipo" 
+                                        'if deb=5 Then print #5,"Call gate bad segment tipo" 
                                         x86gpf(seg2 And inv(3)) 
                                         Exit sub  
                                End Select
 
                         	Case else 
-                                If deb=5 Then print #5,"Bad CALL special descriptor ",segdat(2) And &hF00 
+                                'if deb=5 Then print #5,"Bad CALL special descriptor ",segdat(2) And &hF00 
                                 x86gpf(seg And inv(3)) 
                                 Exit sub  
                        End Select
@@ -1018,35 +1018,35 @@ EndIf
 End Sub
 
 Sub pmoderetf(ByVal is32 As Integer , ByVal off As UShort ) 
-        Dim As ULong  newpc 
-        Dim As ULong  newsp 
-        Dim As ULong  addr, oaddr 
-        Dim As UShort  segdat(4),segdat2(4),seg,newss 
+        Dim As ULong  newpc =Any
+        Dim As ULong  newsp =Any
+        Dim As ULong  addr=any, oaddr=Any 
+        Dim As UShort  segdat(4)=any,segdat2(4)=any,seg=any,newss =Any
         Dim As ULong  oldsp=ESP 
-        
-        If deb=5 Then Print #5,"PMODERETF is32, CS1, pc, cr0, flags:";is32;" ";Hex(CS1,8);" ";Hex(pc,8);" ";Hex(cr0,8);" ";Hex(eflags,8) 
+
+        'if deb=5 Then Print #5,"PMODERETF is32, CS1, pc, cr0, flags:";is32;" ";Hex(CS1,8);" ";Hex(pc,8);" ";Hex(cr0,8);" ";Hex(eflags,8) 
 
         if (is32) Then
                 newpc=POPL() 
                 seg=POPL(): if abrt then return   
         else
-                if deb=5 Then print #5,"PC read from  ",SS1,SP
+                'if deb=5 Then print #5,"PC read from  ",SS1,SP
                 newpc=POPW() 
-                if deb=5 Then print #5,"CS read from  ",SS1,SP
+                'if deb=5 Then print #5,"CS read from  ",SS1,SP
                 seg=POPW(): if abrt then return   
         EndIf
         
-        if deb=5 Then print #5,"Exit sub  to  ",seg,newpc 
+        'if deb=5 Then print #5,"Exit sub  to  ",seg,newpc 
         
         if (seg And 3)<CPL Then 
-            	 If deb=5 Then print #5,"RETF RPL<CPL  ",seg,CPL,ins,CS1,pc 
+            	 'if deb=5 Then print #5,"RETF RPL<CPL  ",seg,CPL,ins,CS1,pc 
                 ESP=oldsp 
                 x86gpf(seg And inv(3)) 
                 Exit sub  
         EndIf
         
         if (seg And inv(3))=0 Then
-            	 If deb=5 Then print #5,"Trying to load CS with NULO selector retf" 
+            	 'if deb=5 Then print #5,"Trying to load CS with NULO selector retf" 
                 x86gpf(0) 
                 Exit sub  
         EndIf
@@ -1054,14 +1054,14 @@ Sub pmoderetf(ByVal is32 As Integer , ByVal off As UShort )
         addr=seg And inv(7)
         if (seg And 4) Then 
                 if addr>=ldt.limit Then
-                    if deb=5 Then print #5,"Bigger than LDT limit  RETF",seg,ldt.limit
+                    'if deb=5 Then print #5,"Bigger than LDT limit  RETF",seg,ldt.limit
                         x86gpf(seg And inv(3)) 
                         Exit sub  
                 EndIf
                 addr+=ldt.base0 
         else
                 if addr>=gdt.limit Then 
-                    if deb=5 Then print #5,"Bigger than GDT limit  RETF",seg,gdt.limit 
+                    'if deb=5 Then print #5,"Bigger than GDT limit  RETF",seg,gdt.limit 
                         x86gpf(seg And inv(3)) 
                         Exit sub  
                 EndIf
@@ -1077,7 +1077,7 @@ Sub pmoderetf(ByVal is32 As Integer , ByVal off As UShort )
         if abrt Then  ESP=oldsp: Exit sub   
 
         oaddr = addr 
-        if deb=5 Then print #5,"CPL  RPL ",CPL,seg And 3,is32 
+        'if deb=5 Then print #5,"CPL  RPL ",CPL,seg And 3,is32 
         if stack32 Then
              ESP+=off 
         else
@@ -1085,11 +1085,11 @@ Sub pmoderetf(ByVal is32 As Integer , ByVal off As UShort )
         EndIf
         
         if CPL=(seg And 3) Then 
-                if deb=5 Then print #5,"RETF CPL = RPL  ", segdat(2) 
+                'if deb=5 Then print #5,"RETF CPL = RPL  ", segdat(2) 
                 Select Case As Const (segdat(2) And &h1F00)
                 	Case &h1800, &h1900, &h1A00, &h1B00  /'Non-conforming'/
                         if (CPL <> DPL) Then 
-                            if deb=5 Then print #5,"RETF non-conforming CPL <> DPL" 
+                            'if deb=5 Then print #5,"RETF non-conforming CPL <> DPL" 
                             ESP=oldsp 
                             x86gpf(seg And inv(3)) 
                             Exit sub  
@@ -1097,20 +1097,20 @@ Sub pmoderetf(ByVal is32 As Integer , ByVal off As UShort )
                         Exit Select 
                 	Case &h1C00, &h1D00, &h1E00, &h1F00  /'Conforming'/
                         if (CPL < DPL) Then 
-                            if deb=5 Then print #5,"RETF non-conforming CPL < DPL" 
+                            'if deb=5 Then print #5,"RETF non-conforming CPL < DPL" 
                             ESP=oldsp 
                             x86gpf(seg And inv(3)) 
                             Exit sub  
                         EndIf
                         Exit Select 
                 	Case else 
-                    if deb=5 Then print #5,"RETF CS not code segment" 
+                    'if deb=5 Then print #5,"RETF CS not code segment" 
                     x86gpf(seg And inv(3)) 
                     Exit sub  
                End Select
                if (segdat(2) And &h8000)=0 Then 
                     ESP=oldsp 
-                    if deb=5 Then print #5,"RETF CS not present "
+                    'if deb=5 Then print #5,"RETF CS not present "
                     x86np(seg  And &hfffc)
                     Exit sub  
                EndIf
@@ -1133,34 +1133,34 @@ EndIf
                 if (CPL=3)  And  (oldcpl<>3) Then flushmmucache_cr3() 
                 use32=IIf((segdat(3) And &h40),&h300,0) 
         else
-                Select Case As Const  (segdat(2) And &h1F00)
+                Select Case As Const(segdat(2) And &h1F00)
                 	Case &h1800, &h1900, &h1A00, &h1B00  /'Non-conforming'/
                         if (seg And 3) <> DPL Then 
-                            if deb=5 Then print #5,"RETF non-conforming RPL <> DPL" 
+                            'if deb=5 Then print #5,"RETF non-conforming RPL <> DPL" 
                             ESP=oldsp 
                             x86gpf(seg And inv(3)) 
                             Exit sub  
                         EndIf
-                        if deb=5 Then print #5,"RETF non-conforming ",seg And 3, DPL 
+                        'if deb=5 Then print #5,"RETF non-conforming ",seg And 3, DPL 
                         Exit Select 
                 	Case &h1C00, &h1D00, &h1E00, &h1F00  /'Conforming'/
                         if (seg And 3) < DPL Then 
-                            if deb=5 Then print #5,"RETF non-conforming RPL < DPL" 
+                            'if deb=5 Then print #5,"RETF non-conforming RPL < DPL" 
                             ESP=oldsp 
                             x86gpf(seg And inv(3)) 
                             Exit sub  
                         EndIf
-                        if deb=5 Then print #5,"RETF conforming ",seg And 3, DPL 
+                        'if deb=5 Then print #5,"RETF conforming ",seg And 3, DPL 
                         Exit Select 
                 	Case else 
-                        If deb=5 Then print #5,"RETF CS not code segment" 
+                        'if deb=5 Then print #5,"RETF CS not code segment" 
                         ESP=oldsp 
                         x86gpf(seg And inv(3)) 
                         Exit sub  
                End Select
                if (segdat(2) And &h8000)=0 Then 
                         ESP=oldsp 
-                    	   If deb=5 Then print #5,"RETF CS not present "
+                    	   'if deb=5 Then print #5,"RETF CS not present "
                     	   x86np(seg  And &hfffc)
                         Exit sub  
                EndIf
@@ -1168,14 +1168,14 @@ EndIf
                         newsp=POPL() 
                         newss=POPL(): if abrt then return   
                 else
-                        if deb=5 Then print #5,"SP read from  ",SS1,SP
+                        'if deb=5 Then print #5,"SP read from  ",SS1,SP
                         newsp=POPW() 
-                        if deb=5 Then print #5,"SS read from  ",SS1,SP
+                        'if deb=5 Then print #5,"SS read from  ",SS1,SP
                         newss=POPW(): if abrt then return   
                 EndIf
-                if deb=5 Then print #5,"Read new stack ", newss, newsp, ldt.base0
+                'if deb=5 Then print #5,"Read new stack ", newss, newsp, ldt.base0
                 if (newss And inv(3))=0 Then 
-                        If deb=5 Then print #5,"RETF loading NULL SS" 
+                        'if deb=5 Then print #5,"RETF loading NULL SS" 
                         ESP=oldsp 
                         x86gpf(newss And inv(3)) 
                         Exit sub  
@@ -1183,7 +1183,7 @@ EndIf
                 addr=newss And inv(7)
                 if (newss And 4) Then 
                         if (addr>=ldt.limit) Then 
-                            if deb=5 Then print #5,"Bigger than LDT limit   RETF SS",newss,gdt.limit
+                            'if deb=5 Then print #5,"Bigger than LDT limit   RETF SS",newss,gdt.limit
                             ESP=oldsp 
                             x86gpf(newss And inv(3)) 
                             Exit sub  
@@ -1191,7 +1191,7 @@ EndIf
                         addr+=ldt.base0 
                 else
                         if (addr>=gdt.limit) Then 
-                            if deb=5 Then print #5,"Bigger than GDT limit   RETF SS",newss,gdt.limit
+                            'if deb=5 Then print #5,"Bigger than GDT limit   RETF SS",newss,gdt.limit
                             ESP=oldsp 
                             x86gpf(newss And inv(3)) 
                             Exit sub  
@@ -1207,28 +1207,28 @@ EndIf
                 cpl_override=0
                 if abrt Then ESP=oldsp: Exit sub   
 
-                if deb=5 Then print #5,"Segment data  ", segdat2(0), segdat2(1), segdat2(2), segdat2(3)
+                'if deb=5 Then print #5,"Segment data  ", segdat2(0), segdat2(1), segdat2(2), segdat2(3)
                 
                 if (newss  And 3) <> (seg  And 3) Then 
-                    if deb=5 Then print #5,"RETF loading SS with wrong permissions ", newss  And 3, seg  And 3, newss, seg
+                    'if deb=5 Then print #5,"RETF loading SS with wrong permissions ", newss  And 3, seg  And 3, newss, seg
                     ESP=oldsp 
                     x86gpf(newss And inv(3)) 
                     Exit sub  
                 EndIf
                 if (segdat2(2) And &h1A00)<>&h1200 Then 
-                    if deb=5 Then print #5,"RETF loading SS wrong tipo" 
+                    'if deb=5 Then print #5,"RETF loading SS wrong tipo" 
                     ESP=oldsp 
                     x86gpf(newss And inv(3)) 
                     Exit sub  
                 EndIf
                 if (segdat2(2) And &h8000)=0 Then 
                         ESP=oldsp 
-                    		If deb=5 Then print #5,"RETF loading SS not present"
+                    		'if deb=5 Then print #5,"RETF loading SS not present"
                     		x86np(newss  And &hfffc)
                         Exit sub  
                 EndIf
                 if DPL2 <> (seg  And 3) Then 
-                        If deb=5 Then print #5,"RETF loading SS with wrong permissions 2 ", DPL2, seg  And 3, newss, seg
+                        'if deb=5 Then print #5,"RETF loading SS with wrong permissions 2 ", DPL2, seg  And 3, newss, seg
                         ESP=oldsp 
                         x86gpf(newss And inv(3)) 
                         Exit sub  
@@ -1287,20 +1287,20 @@ Sub restore_stack()
 End Sub
 
 Sub pmodeint(ByVal num As Integer , ByVal soft As Integer )
-        Dim As UShort  segdat(4),segdat2(4),segdat3(4) 
-        Dim As ULong  addr, oaddr 
-        Dim As UShort  oldcs=CPL,oldcs2,newss 
-        Dim As ULong  oldss,oldsp 
-        Dim As UByte  oldaccess 
-        Dim As Integer tipo 
-        Dim As ULong  newsp 
-        Dim As UShort  seg 
+        Dim As UShort  segdat(4)=any,segdat2(4)=any,segdat3(4)=Any
+        Dim As ULong  addr=Any, oaddr=any
+        Dim As UShort  oldcs=CPL,oldcs2=any,newss=Any 
+        Dim As ULong  oldss=Any,oldsp =any
+        Dim As UByte  oldaccess =Any
+        Dim As Integer tipo =Any
+        Dim As ULong  newsp =Any
+        Dim As UShort  seg =Any
         Dim As Integer stack_changed=0 
 
-        If deb=5 Then Print #5,"PMODEINT:";num;soft;" "; Hex(CS1);":";Hex(pc),Hex(SS1);":";Hex(ESP), abrt
+        'if deb=5 Then Print #5,"PMODEINT:";num;soft;" "; Hex(CS1);":";Hex(pc),Hex(SS1);":";Hex(ESP), abrt
 
         if ((eflags And VM_FLAG)<>0)  And  (IOPL<>3)  And  (soft<>0) Then 
-            If deb=5 Then print #5,"V86 banned INT" 
+            'if deb=5 Then print #5,"V86 banned INT" 
             x86gpf(0) 
             Exit sub 
         EndIf
@@ -1315,10 +1315,10 @@ Sub pmodeint(ByVal num As Integer , ByVal soft As Integer )
 						  print #5,"PMODEINT Doble error!!!"
                     pmodeint(8,0) ' esto parece que lo reinicia todo 
                 Else
-                    if deb=5 Then print #5,"INT out of range" 
+                    'if deb=5 Then print #5,"INT out of range" 
                     x86gpf(IIf((num*8)+2+(soft),0,1)) 
                 EndIf
-                if deb=5 Then print #5,"address >= IDT.limit" 
+                'if deb=5 Then print #5,"address >= IDT.limit" 
                 Exit sub  
         EndIf
         'print #5," Addr ";Hex(addr,8);" ";Hex(idt.base0,8)
@@ -1345,12 +1345,12 @@ Sub pmodeint(ByVal num As Integer , ByVal soft As Integer )
         EndIf
         tipo=segdat(2) And &h1F00 
 
-        Select Case As Const  (tipo)
+        Select Case As const(tipo)
         	Case &h600, &h700, &hE00, &hF00  /'Interrupt and trap gates'/
                         intgatesize=IIf((tipo>=&h800),32,16 )
                         'Print #5,"pmodeint 2:";intgatesize,Hex(oldpc),Hex(pc)
                         if (segdat(2) And &h8000)=0 Then
-                            if deb=5 Then print #5,"Int gate not present "
+                            'if deb=5 Then print #5,"Int gate not present "
                             x86np((num Shl 3) Or 2)
                             Exit sub  
                         EndIf
@@ -1359,14 +1359,14 @@ Sub pmodeint(ByVal num As Integer , ByVal soft As Integer )
                         'Print #5,"pmodeint 3:";Hex(addr),Hex(gdt.base0),Hex(ldt.base0)
                         if (seg And 4) Then 
                                 if (addr>=ldt.limit) Then
-                                    if deb=5 Then print #5,"Bigger than LDT limit ",seg,gdt.limit 
+                                    'if deb=5 Then print #5,"Bigger than LDT limit ",seg,gdt.limit 
                                     x86gpf(seg And inv(3)) 
                                     Exit sub  
                                 EndIf
                                 addr+=ldt.base0 
                         else
                                 if (addr>=gdt.limit) Then
-                                    if deb=5 Then Print #5,"Bigger than GDT limit ",seg,gdt.limit,ins 
+                                    'if deb=5 Then Print #5,"Bigger than GDT limit ",seg,gdt.limit,ins 
                                     x86gpf(seg And inv(3)) 
                                     Exit sub  
                                 EndIf
@@ -1384,22 +1384,22 @@ Sub pmodeint(ByVal num As Integer , ByVal soft As Integer )
                         oaddr = addr 
                                                
                         if (DPL2 > CPL) Then 
-                            if deb=5 Then print #5,"INT to higher level 2" 
+                            'if deb=5 Then print #5,"INT to higher level 2" 
                             x86gpf(seg And inv(3)) 
                             Exit sub  
                         EndIf
                         'Print #5,Hex(segdat2(2)),Hex(segdat2(2) And &h1F00)
-                        Select Case As Const  (segdat2(2) And &h1F00) 
+                        Select Case As const(segdat2(2) And &h1F00) 
                         	Case &h1800, &h1900, &h1A00, &h1B00  /'Non-conforming'/
                                 if (DPL2<CPL) Then 
                                         stack_changed=1 
                                         if (segdat2(2) And &h8000)=0 Then
-                                            if deb=5 Then print #5,"Int gate CS not present"
+                                            'if deb=5 Then print #5,"Int gate CS not present"
                                             x86np(segdat(1)  And &hfffc)
                                             Exit sub  
                                         EndIf
                                         if ((eflags And VM_FLAG)<>0)  And  (DPL2<>0) Then 
-                                            If deb=5 Then print #5,"V86 calling INT gate, DPL <> 0" 
+                                            'if deb=5 Then print #5,"V86 calling INT gate, DPL <> 0" 
                                             x86gpf(segdat(1) And &hFFFC) 
                                             Exit sub  
                                         EndIf
@@ -1418,21 +1418,21 @@ Sub pmodeint(ByVal num As Integer , ByVal soft As Integer )
                                         EndIf
                                         cpl_override=0 
                                         if (newss And inv(3))=0 Then 
-                                            if deb=5 Then print #5,"Int gate loading NULL SS" 
+                                            'if deb=5 Then print #5,"Int gate loading NULL SS" 
                                             x86ss(newss And inv(3)) 
                                             Exit sub  
                                         EndIf
                                         addr=newss And inv(7)
                                         if (newss And 4) Then 
                                                 if (addr>=ldt.limit) Then 
-                                                    if deb=5 Then print #5,"Bigger than LDT limit   PMODEINT SS ",newss,gdt.limit
+                                                    'if deb=5 Then print #5,"Bigger than LDT limit   PMODEINT SS ",newss,gdt.limit
                                                     x86ss(newss And inv(3)) 
                                                     Exit sub  
                                                 EndIf
                                                 addr+=ldt.base0 
                                         else
                                                 if (addr>=gdt.limit) Then 
-                                                    if deb=5 Then print #5,"Bigger than GDT limit   CSC ",newss,gdt.limit
+                                                    'if deb=5 Then print #5,"Bigger than GDT limit   CSC ",newss,gdt.limit
                                                     x86ss(newss And inv(3)) 
                                                     Exit sub  
                                                 EndIf
@@ -1447,17 +1447,17 @@ Sub pmodeint(ByVal num As Integer , ByVal soft As Integer )
                                         cpl_override=0: if abrt then return 
                                           
                                         if ((newss  And 3) <> DPL2)  Or  (DPL3 <> DPL2) Then 
-                                            if deb=5 Then print #5,"Int gate loading SS with wrong permissions" 
+                                            'if deb=5 Then print #5,"Int gate loading SS with wrong permissions" 
                                             x86ss(newss And inv(3)) 
                                             Exit sub  
                                         EndIf
                                         if (segdat3(2) And &h1A00)<>&h1200 Then 
-                                            if deb=5 Then print #5,"Int gate loading SS wrong type" 
+                                            'if deb=5 Then print #5,"Int gate loading SS wrong type" 
                                             x86ss(newss And inv(3)) 
                                             Exit sub  
                                         EndIf
                                         if (segdat3(2) And &h8000)=0 Then 
-                                            if deb=5 Then print #5,"Int gate loading SS not present "
+                                            'if deb=5 Then print #5,"Int gate loading SS not present "
                                             x86np(newss  And &hfffc)
                                             Exit sub  
                                         EndIf
@@ -1478,13 +1478,13 @@ Sub pmodeint(ByVal num As Integer , ByVal soft As Integer )
                                         _ss.base0 = _ss.base0 Or ((segdat3(3) Shr 8) Shl 24)  ' antes ---> if (is386) Then 
                                         _ss.access0=segdat3(2) Shr 8 
 ' --------------------------------------------------------------------------------
-if  CS_ACCESSED Then                                        
+if CS_ACCESSED Then                                        
                    cpl_override = 1 
                    writememw_x86(0, addr+4, segdat3(2)  Or  &h100): /'Set accessed bit'/
                    cpl_override = 0 
 EndIf
 ' --------------------------------------------------------------------------------
-                                        if deb=5 Then print #5,"New stack  ",Hex(SS1),hex(ESP)
+                                        'if deb=5 Then print #5,"New stack  ",Hex(SS1),hex(ESP)
                                         cpl_override=1 
                                         if (tipo>=&h800) Then 
                                         	'Print #5,"Push 32 ",Hex(eflags And VM_FLAG)
@@ -1530,12 +1530,12 @@ EndIf
 ' por eso, lo copia aqui tal cual, de modo que va todo seguido, como si hubiera ejecutado el CASE a continuacion
 ' ---------------------------------------------------------------------------------------------
                                 if (segdat2(2) And &h8000)=0 Then 
-                                    if deb=5 Then print #5,"Int gate CS notpresent"
+                                    'if deb=5 Then print #5,"Int gate CS notpresent"
                                     x86np(segdat(1)  And &hfffc)
                                     Exit sub  
                                 EndIf
                                 if ((eflags And VM_FLAG)<>0)  And  (DPL2<CPL) Then 
-                                    if deb=5 Then print #5,"Int gate V86 mode DPL2<CPL" 
+                                    'if deb=5 Then print #5,"Int gate V86 mode DPL2<CPL" 
                                     x86gpf(seg And inv(3)) 
                                     Exit sub  
                                 EndIf
@@ -1556,12 +1556,12 @@ EndIf
 
                         	Case &h1C00, &h1D00, &h1E00, &h1F00  /'Conforming'/
                                 if (segdat2(2) And &h8000)=0 Then 
-                                    if deb=5 Then print #5,"Int gate CS notpresent"
+                                    'if deb=5 Then print #5,"Int gate CS notpresent"
                                     x86np(segdat(1)  And &hfffc)
                                     Exit sub  
                                 EndIf
                                 if ((eflags And VM_FLAG)<>0)  And  (DPL2<CPL) Then 
-                                    if deb=5 Then print #5,"Int gate V86 mode DPL2<CPL" 
+                                    'if deb=5 Then print #5,"Int gate V86 mode DPL2<CPL" 
                                     x86gpf(seg And inv(3)) 
                                     Exit sub  
                                 EndIf
@@ -1579,7 +1579,7 @@ EndIf
                                 EndIf
                                 Exit Select 
                         	Case else 
-                             If deb=5 Then print #5,"Int gate CS not code segment ",segdat2(0),segdat2(1),segdat2(2),segdat2(3) 
+                             'if deb=5 Then print #5,"Int gate CS not code segment ",segdat2(0),segdat2(1),segdat2(2),segdat2(3) 
                              x86gpf(seg And inv(3)) 
                              Exit sub  
                         End Select
@@ -1600,7 +1600,7 @@ EndIf
                 use32=IIf((segdat2(3) And &h40),&h300,0 )
                 'Print #5,Hex(_cs.limit),Hex(_cs.base0),Hex(_cs.access0)
 ' --------------------------------------------------------------------------------
-if  CS_ACCESSED Then
+if CS_ACCESSED Then
           cpl_override = 1 
           writememw_x86(0, oaddr+4, segdat2(2)  Or  &h100): /'Set accessed bit'/
           cpl_override = 0 
@@ -1619,14 +1619,14 @@ EndIf
                         addr=seg And inv(7)
                         if (seg And 4) Then
                                 if (addr>=ldt.limit) Then
-                                    if deb=5 Then print #5,"Bigger than LDT limit   INT ",seg,gdt.limit 
+                                    'if deb=5 Then print #5,"Bigger than LDT limit   INT ",seg,gdt.limit 
                                     x86gpf(seg And inv(3)) 
                                     Exit sub  
                                 EndIf
                                 addr+=ldt.base0 
                         else
                                 if (addr>=gdt.limit) Then
-                                    if deb=5 Then print #5,"Bigger than GDT limit   INT ",seg,gdt.limit,ins 
+                                    'if deb=5 Then print #5,"Bigger than GDT limit   INT ",seg,gdt.limit,ins 
                                     x86gpf(seg And inv(3)) 
                                     Exit sub  
                                 EndIf
@@ -1641,7 +1641,7 @@ EndIf
                         cpl_override=0: if abrt then return  
                         
                        if (segdat2(2) And &h8000)=0 Then
-                           if deb=5 Then print #5,"Int task gate not present "
+                           'if deb=5 Then print #5,"Int task gate not present "
                            x86np(segdat(1)  And &hfffc) 
                            Exit sub  
                        EndIf
@@ -1653,7 +1653,7 @@ EndIf
                 cpl_override=0 
                 Exit Select 
         	Case else
-            if deb=5 Then print #5,"Bad integer gate tipe ",segdat(2) And &h1F00,segdat(0),segdat(1),segdat(2),segdat(3)
+            'if deb=5 Then print #5,"Bad integer gate tipe ",segdat(2) And &h1F00,segdat(0),segdat(1),segdat(2),segdat(3)
             x86gpf(seg And inv(3))  
         End Select
         'deb=0
@@ -1661,20 +1661,20 @@ EndIf
 end Sub
 
 Sub pmodeiret(ByVal is32 As Integer )
-        Dim As ULong  newsp 
-        Dim As UShort oldcs=CPL,newss 
-        Dim As UShort tempw,tempw2 
-        Dim As ULong  tempflags,flagmask 
-        Dim As ULong  newpc 
-        Dim As UShort segdat(4),segdat2(4)
-        Dim As UShort segs(4) 
-        Dim As UShort seg 
-        Dim As ULong  addr, oaddr 
+        Dim As ULong  newsp =Any
+        Dim As UShort oldcs=CPL,newss =Any
+        Dim As UShort tempw=Any,tempw2 =any
+        Dim As ULong  tempflags=any,flagmask =Any
+        Dim As ULong  newpc =Any
+        Dim As UShort segdat(4)=any,segdat2(4)=Any
+        Dim As UShort segs(4)=Any 
+        Dim As UShort seg =Any
+        Dim As ULong  addr=any, oaddr=Any
         Dim As ULong  oldsp=ESP 
 
-        If deb=5 Then Print #5,"PMODEIRET:";is32;
-        If deb=5 Then Print #5," VIRTUAL x86:";IIf (eflags And VM_FLAG,"SI", "NO");
-        If deb=5 Then Print #5,"  MULTITAREA:";IIf (eflags And NT_FLAG,"SI", "NO")
+        'if deb=5 Then Print #5,"PMODEIRET:";is32;
+        'if deb=5 Then Print #5," VIRTUAL x86:";IIf (eflags And VM_FLAG,"SI", "NO");
+        'if deb=5 Then Print #5,"  MULTITAREA:";IIf (eflags And NT_FLAG,"SI", "NO")
         
         'For deb=-8 To 8 Step 2
         '	Print #5,Hex(leeram2(ss0+SP+deb),4)
@@ -1687,7 +1687,7 @@ Sub pmodeiret(ByVal is32 As Integer )
         ' si es modo virtual x86 (VM_FLAG=1)
         if (eflags And VM_FLAG) Then
                 if (IOPL<>3) Then 
-                        If deb=5 Then print #5,"V86 IRET IOPL<>3" 
+                        'if deb=5 Then print #5,"V86 IRET IOPL<>3" 
                         x86gpf(0) 
                         return  
                 EndIf
@@ -1716,14 +1716,14 @@ Sub pmodeiret(ByVal is32 As Integer )
                 addr=seg And inv(7)
                 if (seg And 4) Then 
                         if (addr>=ldt.limit) Then 
-                                If deb=5 Then print #5,"TS Bigger than LDT limit   IRET",seg,gdt.limit 
+                                'if deb=5 Then print #5,"TS Bigger than LDT limit   IRET",seg,gdt.limit 
                                 x86gpf(seg And inv(3)) 
                                 Return  
                         EndIf
                         addr+=ldt.base0 
                 else
                         if (addr>=gdt.limit) Then 
-                                If deb=5 Then print #5,"TS Bigger than GDT limit   IRET",seg,gdt.limit 
+                                'if deb=5 Then print #5,"TS Bigger than GDT limit   IRET",seg,gdt.limit 
                                 x86gpf(seg And inv(3)) 
                                 Return  
                         EndIf
@@ -1793,7 +1793,7 @@ Sub pmodeiret(ByVal is32 As Integer )
         EndIf
         
         if (seg And inv(3))=0 Then 
-                If deb=5 Then print #5,"IRET CS=0" 
+                'if deb=5 Then print #5,"IRET CS=0" 
                 x86gpf(0) 
                 Exit sub  
         EndIf
@@ -1801,7 +1801,7 @@ Sub pmodeiret(ByVal is32 As Integer )
         addr=seg And inv(7)
         if (seg And 4) Then 
                 if addr>=ldt.limit Then 
-                        If deb=5 Then print #5,"Bigger than LDT limit   IRET",seg,gdt.limit 
+                        'if deb=5 Then print #5,"Bigger than LDT limit   IRET",seg,gdt.limit 
                         x86gpf(seg And inv(3)) 
                         Exit sub  
                 EndIf
@@ -1809,7 +1809,7 @@ Sub pmodeiret(ByVal is32 As Integer )
         Else
         	'Print #5,"pmodeiret da error en PMTUT:";Hex(addr), Hex(seg),Hex(gdt.limit)
                 if addr>=gdt.limit Then 
-                        If deb=5 Then print #5,"Bigger than GDT limit   IRET",seg,gdt.limit 
+                        'if deb=5 Then print #5,"Bigger than GDT limit   IRET",seg,gdt.limit 
                         x86gpf(seg And inv(3)) 
                         Exit sub  
                 EndIf
@@ -1817,7 +1817,7 @@ Sub pmodeiret(ByVal is32 As Integer )
         EndIf
         
         if (seg And 3) < CPL Then 
-                If deb=5 Then print #5,"IRET to lower level" 
+                'if deb=5 Then print #5,"IRET to lower level" 
                 x86gpf(seg And inv(3)) 
                 Exit sub  
         EndIf
@@ -1829,30 +1829,30 @@ Sub pmodeiret(ByVal is32 As Integer )
         segdat(3)=readmemw_386(0,addr+6): cpl_override=0: if abrt Then ESP=oldsp: Exit sub  
         'print #5,"PMODEIRET SEGDAT: ";Hex(segdat(0));" ";Hex(segdat(1));" ";Hex(segdat(2));" ";Hex(segdat(3))
 		  'Print #5,"modo pmodeiret:";Hex(segdat(2) And &h1F00)
-        Select Case As Const  (segdat(2) And &h1F00)
+        Select Case As Const(segdat(2) And &h1F00)
         	Case &h1800, &h1900, &h1A00, &h1B00  /'Non-conforming code'/
                 if ((seg And 3) <> DPL) Then 
-                        If deb=5 Then print #5,"IRET NC DPL ", seg, segdat(0), segdat(1), segdat(2), segdat(3) 
+                        'if deb=5 Then print #5,"IRET NC DPL ", seg, segdat(0), segdat(1), segdat(2), segdat(3) 
                         x86gpf(seg And inv(3)) 
                         Exit sub  
                 EndIf
                 Exit Select 
         	Case &h1C00, &h1D00, &h1E00, &h1F00  /'Conforming code'/
                 if ((seg And 3) < DPL) Then 
-                        If deb=5 Then print #5,"IRET C DPL" 
+                        'if deb=5 Then print #5,"IRET C DPL" 
                         x86gpf(seg And inv(3)) 
                         Exit sub  
                 EndIf
                 Exit Select 
         	Case else 
-                If deb=5 Then print #5,"IRET CS <> code seg" 
+                'if deb=5 Then print #5,"IRET CS <> code seg" 
                 x86gpf(seg And inv(3)) 
                 Exit sub  
         End Select
         
         If (segdat(2) And &h8000)=0 Then 
                 ESP=oldsp 
-                If deb=5 Then print #5,"IRET CS not present"
+                'if deb=5 Then print #5,"IRET CS not present"
                 x86np(seg  And &hfffc)
                 Exit sub  
         EndIf
@@ -1879,7 +1879,7 @@ EndIf
         else
                 /'return to outer level'/
                 oaddr = addr 
-                if deb=5 Then print #5,"Outer level" 
+                'if deb=5 Then print #5,"Outer level" 
                 if (is32) Then 
                         newsp=POPL() 
                         newss=POPL()
@@ -1889,23 +1889,23 @@ EndIf
                         newss=POPW()
                         if abrt Then return   
                 EndIf
-                if deb=5 Then print #5,"IRET load stack  ",newss,newsp
+                'if deb=5 Then print #5,"IRET load stack  ",newss,newsp
                 if (newss And inv(3))=0 Then 
-                        If deb=5 Then print #5,"IRET loading NULO SS" 
+                        'if deb=5 Then print #5,"IRET loading NULO SS" 
                         x86gpf(newss And inv(3)) 
                         Exit sub  
                 EndIf
                 addr=newss And inv(7)
                 if (newss And 4) Then 
                         if (addr>=ldt.limit) Then 
-                                If deb=5 Then print #5,"Bigger than LDT limit   PMODEIRET SS",newss,gdt.limit
+                                'if deb=5 Then print #5,"Bigger than LDT limit   PMODEIRET SS",newss,gdt.limit
                                 x86gpf(newss And inv(3)) 
                                 Exit sub  
                         EndIf
                         addr+=ldt.base0 
                 else
                         if (addr>=gdt.limit) Then 
-                                If deb=5 Then print #5,"Bigger than GDT limit   PMODEIRET",newss,gdt.limit 
+                                'if deb=5 Then print #5,"Bigger than GDT limit   PMODEIRET",newss,gdt.limit 
                                 x86gpf(newss And inv(3)) 
                                 Exit sub  
                         EndIf
@@ -1918,23 +1918,23 @@ EndIf
                 segdat2(3)=readmemw_386(0,addr+6): cpl_override=0: if abrt Then  ESP=oldsp: Exit sub   
 
                 if (newss And 3) <> (seg And 3) Then 
-                        If deb=5 Then print #5,"IRET loading SS with wrong permissions  ", newss, seg 
+                        'if deb=5 Then print #5,"IRET loading SS with wrong permissions  ", newss, seg 
                         x86gpf(newss And inv(3)) 
                         Exit sub  
                 EndIf
                 if (segdat2(2) And &h1A00)<>&h1200 Then 
-                        If deb=5 Then print #5,"IRET loading SS wrong tipo" 
+                        'if deb=5 Then print #5,"IRET loading SS wrong tipo" 
                         x86gpf(newss And inv(3)) 
                         Exit sub  
                 EndIf
                 if DPL2 <> (seg And 3) Then 
-                        If deb=5 Then print #5,"IRET loading SS with wrong permissions 2 ", DPL2, seg  And 3, newss, seg
+                        'if deb=5 Then print #5,"IRET loading SS with wrong permissions 2 ", DPL2, seg  And 3, newss, seg
                         ESP=oldsp 
                         x86gpf(newss And inv(3)) 
                         Exit sub  
                 EndIf
                 if (segdat2(2) And &h8000)=0 Then 
-                        If deb=5 Then print #5,"IRET loading SS not present"
+                        'if deb=5 Then print #5,"IRET loading SS not present"
                         x86np(newss  And &hfffc)
                         Exit sub  
                 EndIf
@@ -2003,21 +2003,22 @@ End Sub
 
 ' IMPORTANTE: en los originales, el "taskswitch386" esta "apagado" (comentado), por lo que SOLO se usa este, el del 286!!!!!
 Sub taskswitch286(seg As UShort , segdat() As UShort, ByVal is32 As Integer ) 
-   Dim As ULong  Base0,obase=tr.base0 
-   Dim As ULong  limit 
-   Dim As ULong  templ 
-   Dim As UShort  tempw 
+   Dim As ULong  Base0=Any,obase=tr.base0 
+   Dim As ULong  limit =Any
+   Dim As ULong  templ =Any
+   Dim As UShort  tempw =Any
 	Dim As ULong  new_cr3=0 
-	Dim As UShort  new_es,new_cs,new_ss,new_ds,new_fs,new_gs 
+	Dim As UShort  new_es=any,new_cs=any,new_ss=any,new_ds=any,new_fs=any,new_gs=Any 
 	Dim As UShort  new_ldt 
-	Dim As ULong  new_eax,new_ebx,new_ecx,new_edx,new_esp,new_ebp,new_esi,new_edi,new_pc,new_flags 
-   Dim As ULong  addr 
-	Dim As UShort  oldflags 
-	Dim As UShort  segdat2(4)
+	Dim As ULong  new_eax=Any,new_ebx=any,new_ecx=any,new_edx=any,new_esp=any,new_ebp=Any
+	Dim As ULong  new_esi=any,new_edi=any,new_pc=any,new_flags =any
+   Dim As ULong  addr =Any
+	Dim As UShort  oldflags =Any
+	Dim As UShort  segdat2(4)=Any
 	
 	Dim As integer depur=0 ' para depurar aqui solo
 
-	 If deb=5 Then print #5,"RUTINA TASKSWITCH286!!! analizar"':sleep
+	 'if deb=5 Then print #5,"RUTINA TASKSWITCH286!!! analizar"':sleep
 	 
      Base0=segdat(1) Or ((segdat(2) And &hFF) Shl 16) Or ((segdat(3) Shr 8) Shl 24) 
      limit=segdat(0) Or ((segdat(3) And &hF) Shl 16) 
@@ -2122,19 +2123,19 @@ Sub taskswitch286(seg As UShort , segdat() As UShort, ByVal is32 As Integer )
              ldt.base0=(readmemw_386(0,templ+2)) Or (readmemb_x86(templ+4) Shl 16) Or (readmemb_x86(templ+7) Shl 24) 
              
              if (eflags And VM_FLAG) Then 
-                     If depur Then print #5,"Task Select Case As Const  V86"
+                     If depur Then print #5,"Task Switch to V86"
                      x86gpf(0) 
                      Exit sub  
              EndIf
              if (new_cs And inv(3))=0 Then 
-                     If depur Then print #5,"TS loading NULO CS" 
+                     If depur Then print #5,"TS loading NULL CS" 
                      x86gpf(0) 
                      Exit sub  
              EndIf
              addr=new_cs And inv(7)
              if (new_cs And 4) Then 
                      if (addr>=ldt.limit) Then 
-                             if deb=5 Then print #5,"Bigger than LDT limit TS ",new_cs,ldt.limit,addr
+                             'if deb=5 Then print #5,"Bigger than LDT limit TS ",new_cs,ldt.limit,addr
                              x86gpf(0) 
                              Exit sub  
                      EndIf
@@ -2156,7 +2157,7 @@ Sub taskswitch286(seg As UShort , segdat() As UShort, ByVal is32 As Integer )
                      x86np(new_cs  And &hfffc)
                      Exit sub  
              EndIf
-             Select Case As Const  (segdat2(2) And &h1F00)
+             Select Case As const(segdat2(2) And &h1F00)
              	Case &h1800, &h1900, &h1A00, &h1B00  /'Non-conforming'/
                      if ((new_cs And 3) <> DPL2) Then 
                              If depur Then Print #5,"TS load CS non-conforming RPL <> DPL" 
@@ -2208,7 +2209,7 @@ Sub taskswitch286(seg As UShort , segdat() As UShort, ByVal is32 As Integer )
              loadseg(new_gs, _gs) 
              if depur Then print #5,"Resuming at  ",CS1,pc
      'Else ' para el 286!!!!
-     '    if deb=5 Then print #5,"16-bit TSS" 
+     '    'if deb=5 Then print #5,"16-bit TSS" 
      '    resetx86() 
      'EndIf
      tr.seg=seg 

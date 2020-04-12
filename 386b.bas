@@ -1,15 +1,15 @@
 
 
 Sub rep386(byval fv As Integer ) 
-        Dim As UByte temp 
-        Dim As ULong c
-        Dim As UByte temp2 
-        Dim As UShort tempw,tempw2
+        Dim As UByte temp = any
+        Dim As ULong c = Any
+        Dim As UByte temp2 = Any
+        Dim As UShort tempw = any,tempw2 = Any
         Dim As Integer changeds=0 
-        Dim As ULong oldds 
-        Dim As ULong templ,templ2 
-        Dim As Integer tempz 
-        Dim As Integer tempi 
+        Dim As ULong oldds = Any 
+        Dim As ULong templ = any,templ2 = Any 
+        Dim As Integer tempz  = Any
+        Dim As Integer tempi = Any 
         Dim As UShort of=flags 
         Dim As ULong ipc=oldpc
         Dim As ULong rep32=op32 
@@ -305,7 +305,7 @@ Sub rep386(byval fv As Integer )
                                  DI+=1: SI+=1  
                         EndIf
                         c-=1 
-                        cycles-=IIf((is486),3,4)
+                        cycles-=3
                 EndIf
                 if (c>0) Then 
                         firstrepcycle=0: pc=ipc: if ssegs Then ssegs+=1   
@@ -323,7 +323,7 @@ Sub rep386(byval fv As Integer )
                                  EDI+=1: ESI+=1  
                         EndIf
                         c-=1 
-                        cycles-=IIf((is486),3,4)
+                        cycles-=3
                 EndIf
                 if (c>0) Then 
                         firstrepcycle=0: pc=ipc: if ssegs Then ssegs+=1   
@@ -341,7 +341,7 @@ Sub rep386(byval fv As Integer )
                                  DI+=2: SI+=2  
                         EndIf
                         c-=1 
-                        cycles-=IIf((is486),3,4) 
+                        cycles-=3 
                 EndIf
                 if (c>0) Then 
                         firstrepcycle=0: pc=ipc: if ssegs Then ssegs+=1   
@@ -359,7 +359,7 @@ Sub rep386(byval fv As Integer )
                                  DI+=4: SI+=4  
                         EndIf
                         c-=1 
-                        cycles-=IIf((is486),3,4)
+                        cycles-=3
                 EndIf
                 if (c>0) Then 
                         firstrepcycle=0: pc=ipc: if ssegs Then ssegs+=1   
@@ -377,7 +377,7 @@ Sub rep386(byval fv As Integer )
                                  EDI+=2: ESI+=2  
                         EndIf
                         c-=1 
-                        cycles-=IIf((is486),3,4) 
+                        cycles-=3 
                 EndIf
                 if (c>0) Then 
                         firstrepcycle=0: pc=ipc: if ssegs Then ssegs+=1   
@@ -395,7 +395,7 @@ Sub rep386(byval fv As Integer )
                                  EDI+=4: ESI+=4  
                         EndIf
                         c-=1 
-                        cycles-=IIf((is486),3,4)
+                        cycles-=3
                 EndIf
                 if (c>0) Then 
                         firstrepcycle=0: pc=ipc: if ssegs Then ssegs+=1   
@@ -422,7 +422,7 @@ Sub rep386(byval fv As Integer )
                             DI+=1: SI+=1  
                         EndIf
                         c-=1 
-                        cycles-=IIf((is486),7,9) 
+                        cycles-=7 
                         setsub8(temp,temp2) 
                 EndIf
                 if (c>0)  And  (fv=iif((flags And Z_FLAG),1,0)) Then 
@@ -452,7 +452,7 @@ Sub rep386(byval fv As Integer )
                                  ESI+=1  
                         EndIf
                         c-=1 
-                        cycles-=IIf((is486),7,9)
+                        cycles-=7
                         setsub8(temp,temp2) 
                 EndIf
                 if (c>0)  And  (fv=iif((flags And Z_FLAG),1,0)) Then 
@@ -482,7 +482,7 @@ Sub rep386(byval fv As Integer )
                                  SI+=2  
                         EndIf
                         c-=1 
-                        cycles-=IIf((is486),7,9 )
+                        cycles-=7
                         setsub16(tempw,tempw2) 
                 EndIf
                 if (c>0)  And  (fv=iif((flags And Z_FLAG),1,0)) Then 
@@ -514,7 +514,7 @@ Sub rep386(byval fv As Integer )
                                  SI+=4  
                         EndIf
                         c-=1 
-                        cycles-=IIf((is486),7,9)
+                        cycles-=7
                         setsub32(templ,templ2) 
                 EndIf
                 if (c>0)  And  (fv=iif((flags And Z_FLAG),1,0)) Then 
@@ -542,7 +542,7 @@ Sub rep386(byval fv As Integer )
                                  EDI+=2: ESI+=2  
                         EndIf
                         c-=1 
-                        cycles-=IIf((is486),7,9) 
+                        cycles-=7 
                         setsub16(tempw,tempw2) 
                 EndIf
                 if (c>0)  And  (fv=iif((flags And Z_FLAG),1,0)) Then 
@@ -570,7 +570,7 @@ Sub rep386(byval fv As Integer )
                               EDI+=4: ESI+=4  
                         EndIf
                         c-=1 
-                        cycles-=IIf((is486),7,9 )
+                        cycles-=7
                         setsub32(templ,templ2) 
                 EndIf
                 if (c>0)  And  (fv=iif((flags And Z_FLAG),1,0)) Then 
@@ -589,7 +589,7 @@ Sub rep386(byval fv As Integer )
                            DI+=1 
                         EndIf
                         c-=1 
-                        cycles-=IIf((is486),4,5)
+                        cycles-=4
                 EndIf
                 if (c>0) Then 
                         firstrepcycle=0: pc=ipc: if ssegs Then ssegs+=1   
@@ -607,7 +607,7 @@ Sub rep386(byval fv As Integer )
                            EDI+=1 
                         EndIf
                         c-=1 
-                        cycles-=iif((is486),4,5) 
+                        cycles-=4 
                 EndIf
                 if (c>0) Then 
                         firstrepcycle=0: pc=ipc: if ssegs Then ssegs+=1   
@@ -625,7 +625,7 @@ Sub rep386(byval fv As Integer )
                             DI+=2 
                         EndIf
                         c-=1 
-                        cycles-=iif((is486),4,5) 
+                        cycles-=4 
                 EndIf
                 if (c>0) Then 
                         firstrepcycle=0: pc=ipc: if ssegs Then ssegs+=1   
@@ -643,7 +643,7 @@ Sub rep386(byval fv As Integer )
                            EDI+=2 
                         EndIf
                         c-=1 
-                        cycles-=iif((is486),4,5) 
+                        cycles-=4 
                 EndIf
                 if (c>0) Then 
                         firstrepcycle=0: pc=ipc: if ssegs Then ssegs+=1   
@@ -661,7 +661,7 @@ Sub rep386(byval fv As Integer )
                            DI+=4 
                         EndIf
                         c-=1 
-                        cycles-=iif((is486),4,5) 
+                        cycles-=4 
                 EndIf
                 if (c>0) Then 
                         firstrepcycle=0: pc=ipc: if ssegs Then ssegs+=1   
@@ -679,7 +679,7 @@ Sub rep386(byval fv As Integer )
                            EDI+=4 
                         EndIf
                         c-=1 
-                        cycles-=iif((is486),4,5) 
+                        cycles-=4 
                 EndIf
                 if (c>0) Then 
                         firstrepcycle=0: pc=ipc: if ssegs Then ssegs+=1   
@@ -814,7 +814,7 @@ Sub rep386(byval fv As Integer )
                            DI+=1 
                         EndIf 
                         c-=1 
-                        cycles-=iif((is486),5,8 )
+                        cycles-=5
                 EndIf
                 if (c>0)  And  (fv=iif((flags And Z_FLAG),1,0)) Then 
                         pc=ipc: firstrepcycle=0: if ssegs Then ssegs+=1   
@@ -841,7 +841,7 @@ Sub rep386(byval fv As Integer )
                             EDI+=1 
                         EndIf
                         c-=1 
-                        cycles-=iif((is486),5,8 )
+                        cycles-=5
                 EndIf
                 if (c>0)  And  (fv=iif((flags And Z_FLAG),1,0)) Then 
                         pc=ipc: firstrepcycle=0: if ssegs Then ssegs+=1   
@@ -868,7 +868,7 @@ Sub rep386(byval fv As Integer )
                            DI+=2 
                         EndIf
                         c-=1 
-                        cycles-=iif((is486),5,8 )
+                        cycles-=5
                 EndIf
                 if (c>0)  And  (fv=iif((flags And Z_FLAG),1,0)) Then 
                         pc=ipc: firstrepcycle=0: if ssegs Then ssegs+=1   
@@ -895,7 +895,7 @@ Sub rep386(byval fv As Integer )
                             DI+=4 
                         EndIf 
                         c-=1 
-                        cycles-=iif((is486),5,8) 
+                        cycles-=5 
                 EndIf
                 if (c>0)  And  (fv=iif((flags And Z_FLAG),1,0)) Then 
                         pc=ipc: firstrepcycle=0: if ssegs Then ssegs+=1   
@@ -922,7 +922,7 @@ Sub rep386(byval fv As Integer )
                            EDI+=2 
                         EndIf
                         c-=1 
-                        cycles-=iif((is486),5,8 )
+                        cycles-=5
                 EndIf
                 if (c>0)  And  (fv=iif((flags And Z_FLAG),1,0)) Then 
                         pc=ipc: firstrepcycle=0: if ssegs Then ssegs+=1   
@@ -949,7 +949,7 @@ Sub rep386(byval fv As Integer )
                              EDI+=4 
                         EndIf
                         c-=1 
-                        cycles-=iif((is486),5,8 )
+                        cycles-=5
                 EndIf
                 if (c>0)  And  (fv=iif((flags And Z_FLAG),1,0)) Then 
                         pc=ipc: firstrepcycle=0: if ssegs Then ssegs+=1   
@@ -961,7 +961,7 @@ Sub rep386(byval fv As Integer )
                 pc=ipc 
                 cycles-=20 
                 x86illegal() 
-                If deb=3 Then Print #5,"Bad REP ",temp,rep32 Shr 8
+                'if deb=3 Then Print #5,"Bad REP ",temp,rep32 Shr 8
         End Select
         
         

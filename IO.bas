@@ -1,8 +1,8 @@
-'Dim Shared As UByte  puertosb(&hffff) ' 1 byte
-'Dim Shared As UShort puertosw(&hffff) ' 2 bytes
-'Dim Shared As ULong  puertosl(&hffff) ' 4 bytes
+'static shared As UByte  puertosb(&hffff) ' 1 byte
+'static shared As UShort puertosw(&hffff) ' 2 bytes
+'static shared As ULong  puertosl(&hffff) ' 4 bytes
 
-'Dim Shared As ULong puertos(&hffff) ' 4 bytes
+'static shared As ULong puertos(&hffff) ' 4 bytes
 
 Declare Sub outb(port As UShort , valor As UByte ) ' 1 byte
 Declare Sub outw(port As UShort , valor As UShort ) ' 2 bytes
@@ -13,12 +13,12 @@ Declare Function inw(port As UShort ) As UShort   ' 2 byte
 Declare Function inl(port As UShort ) As ULong   ' 4 byte
 
 
-Dim Shared As Integer nvraddr
-Dim Shared As UByte nvrram(128)
+static shared As Integer nvraddr
+static shared As UByte nvrram(0 To 127)
 
 
 Sub nvr_rtc() 
-        Dim As Integer c 
+        Dim As Integer c =Any
         if ( (nvrram(&hA) And &hF)=0) Then 
                 rtctime=99999999 
                 return 
@@ -33,8 +33,8 @@ Sub nvr_rtc()
 End Sub
 
 Sub getnvrtime()
-        Dim As integer c,d
-        Dim As UByte baknvr(10)
+        Dim As integer c=Any,d=any
+        Dim As UByte baknvr(10)=Any
 		  Dim As String hora, fecha
       
         hora=Time
@@ -89,7 +89,7 @@ End Sub
 Sub write_NVR(addr As UShort, valor As UByte)
 	'print #5,"WRITE NVR:";Hex(addr,4),Hex(valor,2)
 	'deb=2
-        Dim As Integer c 
+        Dim As Integer c =Any
         if (addr And 1) Then 
                 'if (nvraddr >= &he  And  nvrram(nvraddr) <> valor) Then Print #5,"savenvr sin hacer" 'savenvr() 
                 if (nvraddr<>&hC)  And  (nvraddr<>&hD) Then nvrram(nvraddr)=valor 
@@ -108,7 +108,7 @@ Sub write_NVR(addr As UShort, valor As UByte)
 End Sub
 
 function read_NVR(addr As UShort) As UByte
-        Dim As ubyte temp
+        Dim As ubyte temp=Any
 
         if (addr And 1) Then 
                 if (nvraddr<=&hA) Then getnvrtime() ' hora
@@ -164,7 +164,7 @@ Sub loadCMOS(bios As String)
         rtctime+=RTCCONST*c
 End Sub
 
-Dim Shared cadaxveces As Integer=0
+static shared cadaxveces As Integer=0
 
 Sub clockhardware(cycdiff As Integer) 
                 
@@ -234,8 +234,8 @@ End Sub
 ''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Function checkio(ByVal port As Integer ) As Integer 
-        Dim As UShort  t 
-        Dim As UByte  d 
+        Dim As UShort  t =Any
+        Dim As UByte  d =Any
         cpl_override = 1 
         t = readmemw_386(tr.base0, &h66) 
         cpl_override = 0 
@@ -249,7 +249,7 @@ End Function
 
 ' revisar este define, que no parece correcto, deberia ir integrado en cada linea que lo llama??? por el break 
 function checkio_perm(ByVal port As integer) As Integer
-	Dim As Integer tempi
+	Dim As Integer tempi=Any
 	if (IOPLp=0) or ((eflags And VM_FLAG)<>0) Then
         tempi = checkio(port)
         if abrt then print #5,"ERROR en CHECKIO_PERM":Return 0 ' error
@@ -408,7 +408,7 @@ End Sub
 
 ' ENTRADA PUERTOS PC
 Function inb(ByVal port As UShort) As UByte
-	Dim valor As Integer
+	Dim valor As Integer=Any
 
 	If port>=&h3C0 And port<=&h3DF Then ' VGA
 		Return et4000_in(port)
@@ -533,17 +533,26 @@ Function inb(ByVal port As UShort) As UByte
 
 	' desconocido, quizas puerto de juegos MIDI
 	If port=&h201 Then 
-		Return &hff
+		Return 0'&hff
 	EndIf
 	
 	' gameblaster
 	If port>=&h220 And port<=&h223 Then 
-		Return &hff
+		Return 0'&hff
+	EndIf
+	
+	' sound blaster, los usa el Pinball Dreams, y si no lo anulo, no se inicia
+	If port>=&h22A And port<=&h22D Then 
+		Return 0'&hff
+	EndIf
+	
+	If port>=&h23A And port<=&h23D Then 
+		Return 0'&hff
 	EndIf
 	
 		' desconocido
 	If port>=&h388 And port<=&h389 Then 
-		Return &hff
+		Return 0'&hff
 	EndIf
 	
 	
@@ -604,7 +613,7 @@ End Sub
 
 
 Function inw(ByVal port As UShort) As UShort
-	Dim valor As UShort
+	Dim valor As UShort=Any
 	
 	
 	If port>=&h3A0 And port<=&h3DE Then 

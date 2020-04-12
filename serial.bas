@@ -11,13 +11,13 @@ Type serial0
      As UByte linestat,thr,mctrl,rcr,iir,ier,lcr
      As UByte dlab1,dlab2
 End Type
-Dim Shared As serial0 serial, serial2
+static shared As serial0 serial, serial2
 
-Dim Shared as Integer serial_fifo_read, serial_fifo_write
+static shared As Integer serial_fifo_read, serial_fifo_write
 
-Dim Shared as Integer mousepos=-1
-Dim Shared as Integer mousedelay
-Dim Shared as UByte serial_fifo(256)
+static shared As Integer mousepos=-1
+static shared As Integer mousedelay
+static shared as UByte serial_fifo(0 To 255)
 
 
 Sub serial_reset() 
@@ -162,7 +162,7 @@ Sub serial2_write(addr As UShort , valor As UByte )
 end Sub
 
 Function serial2_read(addr As UShort ) As UByte 
-        Dim As UByte  temp 
+        Dim As UByte  temp =Any
         Select Case As const (addr And 7)
         	Case 0 
              if serial2.lcr And &h80 Then return serial2.dlab1 

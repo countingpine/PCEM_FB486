@@ -1,14 +1,14 @@
 
 
-#Define STAT_PARITY     &h80
-#Define STAT_RTIMEOUT   &h40
-#Define STAT_TTIMEOUT   &h20
-#Define STAT_MFULL      &h20
-#Define STAT_LOCK       &h10
-#Define STAT_CD         &h08
-#Define STAT_SYSFLAG    &h04
-#Define STAT_IFULL      &h02
-#Define STAT_OFULL      &h01
+const STAT_PARITY     =&h80
+Const STAT_RTIMEOUT   =&h40
+Const STAT_TTIMEOUT   =&h20
+Const STAT_MFULL      =&h20
+Const STAT_LOCK       =&h10
+Const STAT_CD         =&h08
+Const STAT_SYSFLAG    =&h04
+Const STAT_IFULL      =&h02
+Const STAT_OFULL      =&h01
 
 type structkeyb
 		  As Integer initialised
@@ -18,25 +18,25 @@ type structkeyb
         As Integer key_wantdata
         as UByte command0
         As UByte status
-        As UByte mem(&h20)
+        As UByte mem(0 To 31)
         As UByte out0
         As UByte input_port
         As UByte output_port
         As UByte key_command
 End Type
-Dim Shared keyboard_at As structkeyb
+static shared keyboard_at As structkeyb
 
 
-static Shared as UByte key_ctrl_queue(16)
+static Shared as UByte key_ctrl_queue(0 To 15)
 Static Shared as Integer key_ctrl_queue_start=  0, key_ctrl_queue_end = 0
-Static Shared as UByte key_queue(16)
+Static Shared as UByte key_queue(0 To 15)
 Static Shared as Integer key_queue_start = 0, key_queue_end = 0
-Static Shared as uByte mouse_queue(16)
+Static Shared as uByte mouse_queue(0 To 15)
 
-Dim Shared as Integer mouse_queue_start = 0, mouse_queue_end = 0
+static shared As Integer mouse_queue_start = 0, mouse_queue_end = 0
 
-Dim Shared as Integer keyboard_scan
-Dim Shared as Integer mouse_write
+static shared As Integer keyboard_scan
+static shared As Integer mouse_write
 
 
 'Declare Sub keyboard_at_adddata(valor As ubyte)
@@ -46,29 +46,29 @@ Sub keyboard_at_poll()
      If (keyboard_at.wantirq) Then 
              keyboard_at.wantirq = 0 
              picint(2) 
-             ' If deb=3 then print #5,"keyboard_at   take IRQ ..............."
+             ' 'if deb=3 then print #5,"keyboard_at   take IRQ ..............."
      ElseIf (keyboard_at.wantirq12) Then
 				 keyboard_at.wantirq12 = 0
              picint(&h1000) 
-             ' if deb=3 then print #5,"keyboard_at   take IRQ 12 ..............."
+             ' 'if deb=3 then print #5,"keyboard_at   take IRQ 12 ..............."
      EndIf
      
      If ((keyboard_at.status And STAT_OFULL)=0) And ((keyboard_at.mem(0) And &h10)=0) And (mouse_queue_start <> mouse_queue_end) Then 
-             ' if deb=3 then print #5,"Reading from the mouse queue at ", keyboard_at.out0, key_queue_start 
+             ' 'if deb=3 then print #5,"Reading from the mouse queue at ", keyboard_at.out0, key_queue_start 
              keyboard_at.out0    = mouse_queue(mouse_queue_start) 
              mouse_queue_start   = (mouse_queue_start + 1) And &hf 
              keyboard_at.status  = keyboard_at.status Or (STAT_OFULL Or STAT_MFULL) 
              keyboard_at.status  = keyboard_at.status And inv(STAT_IFULL) 
              if (keyboard_at.mem(0)  And &h02) Then keyboard_at.wantirq12 = 1         
      ElseIf ((keyboard_at.status And STAT_OFULL)=0) And ((keyboard_at.mem(0) And &h10)=0) And (key_queue_start <> key_queue_end) Then
-				 ' If deb=3 then print #5,"Reading from the key queue at ", keyboard_at.out0, key_queue_start 
+				 ' 'if deb=3 then print #5,"Reading from the key queue at ", keyboard_at.out0, key_queue_start 
              keyboard_at.out0    = key_queue(key_queue_start) 
              key_queue_start     = (key_queue_start + 1) And &hf 
              keyboard_at.status  = keyboard_at.status Or  STAT_OFULL 
              keyboard_at.status  = keyboard_at.status And inv(STAT_IFULL) 
              if (keyboard_at.mem(0) And &h01) Then keyboard_at.wantirq = 1     
      ElseIf ((keyboard_at.status And STAT_OFULL)=0) And (key_ctrl_queue_start <> key_ctrl_queue_end) Then 
-             ' if deb=3 then print #5,"Reading from the key ctrl_queue at ", keyboard_at.out0, key_ctrl_queue_start 
+             ' 'if deb=3 then print #5,"Reading from the key ctrl_queue at ", keyboard_at.out0, key_ctrl_queue_start 
              keyboard_at.out0     = key_ctrl_queue(key_ctrl_queue_start) 
              key_ctrl_queue_start = (key_ctrl_queue_start + 1) And &hf 
              keyboard_at.status   = keyboard_at.status Or  STAT_OFULL 
@@ -81,25 +81,25 @@ End Sub
 Sub keyboard_at_adddata(valor As UByte ) 
        key_ctrl_queue(key_ctrl_queue_end) = valor 
        key_ctrl_queue_end = (key_ctrl_queue_end + 1) And &hf 
-       ' if deb=3 then print #5,"keyboard_at added to queue ", valor                 
+       ' 'if deb=3 then print #5,"keyboard_at added to queue ", valor                 
 End Sub
 
 Sub keyboard_at_adddata_keyboard(valor As UByte ) 
         key_queue(key_queue_end) = valor 
         key_queue_end = (key_queue_end + 1)  And &hf 
-        ' if deb=3 then print #5,"keyboard_at added to key queue ", valor 
+        ' 'if deb=3 then print #5,"keyboard_at added to key queue ", valor 
         return 
 End Sub
 
 Sub keyboard_at_adddata_mouse(valor As UByte ) 
         mouse_queue(mouse_queue_end) = valor 
         mouse_queue_end = (mouse_queue_end + 1) And &hf 
-        ' if deb=3 then print #5,"keyboard_at added to mouse queue ", valor 
+        ' 'if deb=3 then print #5,"keyboard_at added to mouse queue ", valor 
         return 
 End Sub
 
 Sub keyboard_at_write(port As UShort , valor As UByte ) 
-        ' if deb=3 then print #5,"keyboard_at  write ", port, valor, keyboard_at.key_wantdata, ram[8] 
+        ' 'if deb=3 then print #5,"keyboard_at  write ", port, valor, keyboard_at.key_wantdata, ram[8] 
 
         Select Case As Const  (port)
         	Case &h60 
@@ -128,7 +128,7 @@ Sub keyboard_at_write(port As UShort , valor As UByte )
                                 Exit Select ' nada
                                  
                         	case &hd1  /'Write output port'/
-                                ' if deb=3 then print #5,"Write output port  ", keyboard_at.output_port, valor, CS1, pc 
+                                ' 'if deb=3 then print #5,"Write output port  ", keyboard_at.output_port, valor, CS1, pc 
                                 if ((keyboard_at.output_port Xor valor) And &h02) Then 
                                         /'A20 enable change'/
                                         mem_a20_key = valor And &h02 
@@ -142,12 +142,12 @@ Sub keyboard_at_write(port As UShort , valor As UByte )
                                  
                         	'case &hd4  /'Write to mouse'/
                                 'if (mouse_write) Then 
-                                	' if deb=3 then print #5,"escribir a raton, sin hacer" 
+                                	' 'if deb=3 then print #5,"escribir a raton, sin hacer" 
                                 	'mouse_write(valor) 
                                 'EndIf
                                       
                         	'Case Else 
-                                ' if deb=3 then print #5,"Bad AT keyboard controller 0060 write ", valor, keyboard_at.command0 
+                                ' 'if deb=3 then print #5,"Bad AT keyboard controller 0060 write ", valor, keyboard_at.command0 
                        End Select
                 else
                         /'Write to keyboard'/                        
@@ -188,7 +188,7 @@ Sub keyboard_at_write(port As UShort , valor As UByte )
                                         keyboard_at_adddata_keyboard(&haa) 
                                          
                                 	Case Else 
-                                        ' if deb=3 then print #5,"Bad AT keyboard command  ", valor 
+                                        ' 'if deb=3 then print #5,"Bad AT keyboard command  ", valor 
                                         keyboard_at_adddata_keyboard(&hfe) 
                                End Select
                         EndIf
@@ -292,7 +292,7 @@ Sub keyboard_at_write(port As UShort , valor As UByte )
                         ' nada
                         
                 	'Case Else 
-                        ' if deb=3 then print #5,"Bad AT keyboard controller command ", valor 
+                        ' 'if deb=3 then print #5,"Bad AT keyboard controller command ", valor 
                End Select
        End Select
 end Sub
@@ -300,7 +300,7 @@ end Sub
 Function keyboard_at_read(port As UShort ) As UByte 
         Dim As UByte temp = &hff 
         cycles -= 4 
-        Select Case As Const  (port)
+        Select Case As Const(port)
         	Case &h60 
                 temp = keyboard_at.out0 
                 keyboard_at.status  = keyboard_at.status And inv(STAT_OFULL Or STAT_MFULL) 

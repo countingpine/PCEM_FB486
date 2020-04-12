@@ -1,9 +1,9 @@
 
-Dim Shared as UByte dmaregs(16)
-Dim Shared as Integer dmaon(4)
-Dim Shared as UByte dma16regs(16)
-Dim Shared as Integer dma16on(4)
-Dim Shared as UByte dmapages(16)
+static shared As UByte dmaregs(0 To 15)
+static shared As Integer dmaon(0 To 3)
+static shared As UByte dma16regs(0 To 15)
+static shared As Integer dma16on(0 To 3)
+static shared As UByte dmapages(0 To 15)
 
 
 'Sub dma_init() 
@@ -18,7 +18,7 @@ Dim Shared as UByte dmapages(16)
 
 
 Sub dma_reset() 
-        Dim As Integer c 
+        Dim As Integer c =Any
         dma.wp=0 
         for  c=0 To 15
         	dmaregs(c)=0
@@ -46,7 +46,7 @@ Sub dma_reset()
 End Sub
 
 Function dma_read(byval addr As Ushort ) As UByte 
-        Dim As UByte  temp 
+        Dim As UByte  temp =Any
         Select Case As Const  (addr And &hF)
         	case 0, 2, 4, 6  /'Address registers'/
                 dma.wp = dma.wp Xor 1 
@@ -120,7 +120,7 @@ Sub dma_write(byval addr As Ushort, ByVal valor As UByte )
 end Sub
 
 Function dma16_read(ByVal addr As UShort ) As UByte 
-        Dim As UByte  temp 
+        Dim As UByte  temp =Any
         addr = addr Shr 1 
         Select Case As Const  (addr And &hF)
         	Case 0 
@@ -234,7 +234,7 @@ End Function
 ' por que son SOLO para el FDC.BAS, y espero NO usarlo al acabar, y borrarlos
 
 Function readdma1() As UByte 
-        Dim As UByte temp=0 
+        Dim As UByte temp=Any
 
         temp=ram[(dma.ac(1)+(dma.page(1) Shl 16)) And rammask] 
         if dmaon(1)=0 Then 
@@ -252,7 +252,7 @@ Function readdma1() As UByte
 End Function
 
 Function readdma5() As UShort 
-        Dim As UShort temp=0 
+        Dim As UShort temp=Any
         
         temp=ram[((dma16.ac(1) Shl 1)+((dma16.page(1) And inv(1)) Shl 16)  ) And rammask] _ 
          Or (ram[((dma16.ac(1) Shl 1)+((dma16.page(1) And inv(1)) Shl 16)+1) And rammask] Shl 8) 
@@ -299,7 +299,7 @@ Sub writedma5(temp As UShort )
 End Sub
 
 Function readdma3() As Integer 
-        Dim As ubyte temp
+        Dim As ubyte temp =any
         temp=ram[((dma.page(3) Shl 16)+dma.ac(3)) And rammask]
         if (dma.m And 8) Then Return -1 
         if (dma.m And 8)=0 Then 

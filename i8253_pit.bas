@@ -6,13 +6,13 @@
 'B0 to 40, two writes to 43, then two reads - value does not change!
 'B4 to 40, two writes to 43, then two reads - value _does_ change!
 
-Dim Shared as Integer pitsec=0
-Dim Shared as Double PITCONST
+static shared As Integer pitsec=0
+static shared As Double PITCONST
 
 
 
 Sub setpitclock(clock As Single ) 
-        Dim As Single temp 
+        Dim As Single temp =Any
         
         CPUCLOCK = clock 
         PITCONST = clock/1193182.0
@@ -51,7 +51,7 @@ End Sub
 
 
 Sub pit_write(ByVal addr As UShort , ByVal valor As UByte ) 
-        Dim As Integer t 
+        Dim As Integer t =any
         Dim As UByte  oldctrl=pit.ctrl 
         cycles -= PITCONST 
         Select Case As Const  (addr And 3)
@@ -67,7 +67,7 @@ Sub pit_write(ByVal addr As UShort , ByVal valor As UByte )
                 pit.ctrls(valor Shr 6)=valor
                 pit.ctrl=valor 
                 if (valor Shr 7)=3 Then 
-                        if deb=3 then print #5,"Bad PIT reg select"
+                        'if deb=3 then print #5,"Bad PIT reg select"
                         return 
                 EndIf
                 if (pit.ctrl And &h30)=0 Then 
@@ -129,7 +129,7 @@ Sub pit_write(ByVal addr As UShort , ByVal valor As UByte )
 end Sub
 
 Function pit_read(ByVal addr As UShort ) As UByte 
-        Dim As UByte temp 
+        Dim As UByte temp =Any
         cycles -= PITCONST       
         
         Select Case As Const  (addr And 3)

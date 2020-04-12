@@ -1,20 +1,20 @@
 
-Dim Shared as Integer mem_a20_alt=0
-Dim Shared as Integer mem_a20_key=0
+static shared As Integer mem_a20_alt=0
+static shared As Integer mem_a20_key=0
 static Shared As Integer mem_a20_state = 0
 
-'Dim Shared as Integer readlnum=0,writelnum=0
-Dim Shared as Integer nopageerrors
-Dim Shared as Integer cache=4 ' en la rutina "mem_updatecache" 4=256k, el maximo para un 486 dx266
-Dim Shared as Integer memwaitstate
-Dim Shared as ULong biosmask=&hFFFF ' BIOS de 64k
-Dim Shared as Integer cachesize=256
-'Dim Shared as UByte romext(32768)
-Dim Shared as ULong mmucache(&h100000)
-Dim Shared as Integer mmucaches(64)
-Dim Shared as Integer mmunext=0
-Dim Shared as Integer mmuflush=0
-Dim Shared as Integer pctrans=0
+'static shared as Integer readlnum=0,writelnum=0
+static shared As Integer nopageerrors
+static shared As Integer cache=4 ' en la rutina "mem_updatecache" 4=256k, el maximo para un 486 dx266
+static shared As Integer memwaitstate
+static shared As ULong biosmask=&hFFFF ' BIOS de 64k
+static shared As Integer cachesize=256
+'static shared as UByte romext(32768)
+static shared As ULong mmucache(0 To &hFFFFF)
+static shared As Integer mmucaches(0 To 53)
+static shared As Integer mmunext=0
+static shared As Integer mmuflush=0
+static shared As Integer pctrans=0
 
 
 static Shared as ULong mem_logical_addr
@@ -175,7 +175,7 @@ End Sub
 '''''''''''''
 
 Sub initmmucache() 
-        Dim As Integer c 
+        Dim As Integer c =Any
         for  c=0 To &hFFFFF
         		mmucache(c)=&hFFFFFFFF
         Next
@@ -211,7 +211,10 @@ End Sub
 
 
 Sub flushmmucache() 
-        Dim As integer c 
+	'''''''''''''''''''''''''
+	Return ' anulado por ahora
+	''''''''''''''''''''''''
+        Dim As integer c =Any
         for  c=0 To 255 
                 if (readlookup(c)<>&hFFFFFFFF) Then 
                         readlookup2[readlookup(c)]=&hFFFFFFFF 
@@ -225,8 +228,8 @@ Sub flushmmucache()
         mmuflush+=1 
         pccache=&hFFFFFFFF 
         
-        'c=&hFFFFFFFF  ' es mejor asi??? (para que el puntero PCCACHE2 no apunte al infinito)
-        pccache2=&hFFFFFFFF 
+        c=&hFFFFFFFF  ' es mejor asi??? (para que el puntero PCCACHE2 no apunte al infinito)
+        pccache2=@c'&hFFFFFFFF 
         
         for  c=0 To 63
                 if (mmucaches(c)<>&hFFFFFFFF) Then 
@@ -239,7 +242,10 @@ End Sub
 
 
 Sub flushmmucache_cr3()
-        Dim As Integer c
+	'''''''''''''''''''''''''
+	Return ' anulado por ahora
+	''''''''''''''''''''''''
+        Dim As Integer c=Any
         for  c=0 To 255 
                 if (readlookup(c)<>&hFFFFFFFF) Then 
                         readlookup2[readlookup(c)]=&hFFFFFFFF 
@@ -289,8 +295,8 @@ end Sub
 
 Function mmutranslatereal(ByVal addr As ULong , ByVal rw As Integer ) As ULong 
         'Dim As Integer mmuout=0 
-        Dim As ULong  addr2 
-        Dim As ULong  temp,temp2,temp3 
+        Dim As ULong  addr2 =Any
+        Dim As ULong  temp=any,temp2=any,temp3=Any 
 
         If abrt Then Return -1 'Print #5,"FALLO EN MMUTRANSLATEREAL":Return -1 
 
@@ -339,7 +345,10 @@ End Function
 Sub addreadlookup(ByVal virt As ULong , ByVal phys As ULong )
 'If virt<&h100000 Or virt>RAM_TOTAL Then Return
 'print #5,"AddReadlookup:";Hex(virt);"  ";Hex(phys);"  ";Hex(cs0);"  ";Hex(ds0);"  ";Hex(es0);"  ";Hex(ss0);"  ";Hex(opcode);"  ";Hex(pc)
-Return
+	
+	'''''''''''''''''''''''''
+	Return ' anulado por ahora
+	''''''''''''''''''''''''
         if readlookup2[virt Shr 12]<>&hFFFFFFFF Then Return 
         
         if cachelookup2[phys Shr 12]=0 Then 
@@ -364,7 +373,10 @@ End Sub
 Sub addwritelookup(ByVal virt As ULong , ByVal phys As ULong ) 
 'If virt<&h100000 Or virt>RAM_TOTAL Then Return
 'print #5,"AddWritelookup:";Hex(virt);"  ";Hex(phys);"  ";Hex(virt Shr 12);"  ";Hex(writelookup2[virt Shr 12])
-Return
+	
+	'''''''''''''''''''''''''
+	Return ' anulado por ahora
+	''''''''''''''''''''''''
         if writelookup2[virt Shr 12]<>&hFFFFFFFF Then Return 
 
         if cachelookup2[phys Shr 12]=0 Then 
@@ -415,8 +427,8 @@ End Sub
 Function readmemb_386l(ByVal seg As Ulong , ByVal addr As Ulong ) As UByte 
 
         If (seg=&hFFFFFFFF) Then 
-        			 if (deb=3) Then print #5,"SEG:";Hex(seg,8);" ADDR:";Hex(addr,8)
-                if (deb=3) Then print #5,"error segment rb FFFFFFFF":sleep
+        			 'if (deb=3) Then print #5,"SEG:";Hex(seg,8);" ADDR:";Hex(addr,8)
+                'if (deb=3) Then print #5,"error segment rb FFFFFFFF":sleep
                 return -1 
         EndIf
         mem_logical_addr = seg + addr
@@ -498,7 +510,7 @@ Function readmemw_386l(ByVal seg As Ulong , ByVal addr As ULong ) As UShort
                 'EndIf
         EndIf
         if (seg=&hFFFFFFFF) Then 
-                if (deb=3) Then print #5,"0 segment rw",CS1,cs0,pc,opcode,addr 
+                'if (deb=3) Then print #5,"0 segment rw",CS1,cs0,pc,opcode,addr 
                 return -1 
         EndIf
         if (cr0 Shr 31) Then 
@@ -538,7 +550,7 @@ Function readmeml_386l(ByVal seg As Ulong , ByVal addr As ULong ) As Ulong
                 return readmemw_386(seg,addr) Or (readmemw_386(seg,addr+2) Shl 16) 
         EndIf
         if (seg=&hFFFFFFFF) Then 
-                if deb=3 then print #5,"0 segment rl ",CS1,cs0,pc,opcode,addr 
+                'if deb=3 then print #5,"0 segment rl ",CS1,cs0,pc,opcode,addr 
                 return -1 
         EndIf
         if (cr0 Shr 31) Then 
@@ -573,8 +585,8 @@ End Function
 Sub writememb_386l(ByVal seg As Ulong , ByVal addr As Ulong , ByVal valor As UByte ) 
 
         If (seg=&hFFFFFFFF) Then 
-        	       if (deb=3) Then print #5,"SEG:";Hex(seg,8);" ADDR:";Hex(addr,8)
-                if (deb=3) Then print #5,"error segment wb FFFFFFFF":sleep
+        	       'if (deb=3) Then print #5,"SEG:";Hex(seg,8);" ADDR:";Hex(addr,8)
+                'if (deb=3) Then print #5,"error segment wb FFFFFFFF":sleep
                 return 
         EndIf
         mem_logical_addr = addr + seg 
@@ -630,7 +642,7 @@ Sub writememw_386l(ByVal seg As ULong , ByVal addr As Ulong , ByVal valor As USh
                 return 
         EndIf
         if (seg=&hFFFFFFFF) Then 
-                if (deb=3) Then print #5,"0 segment ww",CS1,cs0,pc,opcode,addr 
+                'if (deb=3) Then print #5,"0 segment ww",CS1,cs0,pc,opcode,addr 
                 return 
         EndIf
         if (cr0 Shr 31) Then 
@@ -684,7 +696,7 @@ Sub writememl_386l(ByVal seg As Ulong , ByVal addr As Ulong , ByVal valor As ULo
                 return 
         EndIf
         if (seg=&hFFFFFFFF) Then 
-                if deb=3 then print #5,"0 segment wl",CS1,cs0,pc,opcode,addr 
+                'if deb=3 then print #5,"0 segment wl",CS1,cs0,pc,opcode,addr 
                 return 
         EndIf
         if (cr0 Shr 31) Then 
@@ -928,7 +940,7 @@ Function getpccache(ByVal a As ULong ) As UByte Ptr
              Return @ram[(a And &hFFFFF000) - (a2 And inv(&hFFF))] 
         EndIf
 
-        Select Case As Const  (a Shr 16)
+        Select Case As Const (a Shr 16)
         	case &hC  ' direccion C0000 VROM
         		' if (a and &h 8000) then return @romext ....  aqui va la lectura de ROMEXT, pero lo tengo desactivado
             Return @vrom[(a And &h7000) - (a2 And inv(&hFFF))]
@@ -949,7 +961,7 @@ End Function
 
 ''''''' rutinas 386 ''''''''
 Function fastreadw(ByVal a As ULong ) As UShort ' devuelve 16 bits, 2 bytes
-        Dim As ULong t 
+        Dim As ULong t =Any
 
         ' esta condicion solo se cumple si ADDR2=&HFFF nada mas.....
         If ((a And &hFFF)>&hFFE) Then 
@@ -966,14 +978,14 @@ End Function
 
 Function fastreadl(ByVal a As ULong ) As ULong ' devuelve 32bits (4 bytes)
      Dim As UByte Ptr t 
-     Dim As ULong valor 
+     Dim As ULong valor =Any
 
      ' si la lectura esta dentro de 4096 bytes, usa el cache de 4k para leer
      If ((a And &hFFF)<&hFFD) Then 
        if ((a Shr 12)<>pccache) Then 
        	'print #5,"fastreadl:";hex(a,8)':Sleep
             t = getpccache(a) 
-            If abrt Then Print #5,"Error en fastreadl":Return 0 
+            'If abrt Then Print #5,"Error en fastreadl":Return 0 
             pccache2 = t 
             pccache=a Shr 12 
        EndIf

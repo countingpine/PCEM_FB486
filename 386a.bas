@@ -4,6 +4,7 @@
 Sub seteab(v As Ubyte) 
 	if (modo<>3) Then 
 		if (eal_w) Then 
+			Print #5,Hex(eal_w,8),Hex(v,2),
 			*eal_w=v
 			Print #5,"SETEAB revisar"
 			Exit sub 
@@ -23,6 +24,7 @@ End Sub
 sub seteaw(v As UShort) 
 	if (modo<>3) Then
 		if (eal_w) Then 
+			Print #5,Hex(eal_w,8),Hex(v,4),
 			*eal_w=v 
 			Print #5,"SETEAW revisar"
 		else 
@@ -36,6 +38,7 @@ End Sub
 sub seteal(v As ULong)
 	if (modo<>3) Then 
 		If (eal_w) Then 
+			Print #5,Hex(eal_w,8),Hex(v,8),
 			*eal_w=v
 			Print #5,"SETEAL revisar"
 		Else 
@@ -111,7 +114,8 @@ End Function
 
 
 Sub setadd32(a As ULong , b As ULong ) 
-        Dim As ULong c=a+b
+        Dim As ULong c=Any
+        c=a+b
         flags = flags And inv(&h8D5) 
         flags = flags Or iif(c And &h80000000,N_FLAG,iif(c=0,Z_FLAG,0)) 
         flags = flags Or (znptable8(c And &hFF) And P_FLAG) 
@@ -121,7 +125,8 @@ Sub setadd32(a As ULong , b As ULong )
 End Sub
 
 Sub setadd32nc(a As ULong , b As ULong ) 
-        Dim As ULong  c=a+b
+        Dim As ULong c=Any
+        c=a+b
         flags = flags And inv(&h8D4) 
         flags = flags Or iif(c And &h80000000,N_FLAG,IIf(c=0,Z_FLAG,0)) 
         flags = flags Or (znptable8(c And &hFF) And P_FLAG) 
@@ -130,7 +135,8 @@ Sub setadd32nc(a As ULong , b As ULong )
 End Sub
 
 Sub setadc32(a As ULong , b As ULong ) 
-        Dim As ULong  c=a+b+tempc 
+        Dim As ULong c=Any
+        c=a+b+tempc 
         flags = flags And inv(&h8D5) 
         flags = flags Or iif(c And &h80000000,N_FLAG,IIf(c=0,Z_FLAG,0)) 
         flags = flags Or (znptable8(c And &hFF) And P_FLAG) 
@@ -140,7 +146,8 @@ Sub setadc32(a As ULong , b As ULong )
 End Sub
 
 Sub setsub32(a As ULong , b As ULong ) 
-        Dim As ULong  c=a-b
+        Dim As ULong c=Any
+        c=a-b
         flags = flags And inv(&h8D5) 
         flags = flags Or iif(c And &h80000000,N_FLAG,IIf(c=0,Z_FLAG,0)) 
         flags = flags Or (znptable8(c And &hFF) And P_FLAG) 
@@ -150,7 +157,8 @@ Sub setsub32(a As ULong , b As ULong )
 End Sub
 
 Sub setsub32nc(a As ULong , b As ULong ) 
-        Dim As ULong  c=a-b
+        Dim As ULong c=Any
+        c=a-b
         flags = flags And inv(&h8D4) 
         flags = flags Or iif(c And &h80000000,N_FLAG,IIf(c=0,Z_FLAG,0)) 
         flags = flags Or (znptable8(c And &hFF) And P_FLAG) 
@@ -159,7 +167,8 @@ Sub setsub32nc(a As ULong , b As ULong )
 End Sub
 
 Sub setsbc32(a As ULong , b As ULong ) 
-        Dim As ULong  c=a-(b+tempc)
+        Dim As ULong c=Any
+        c=a-(b+tempc)
         flags = flags And inv(&h8D5) 
         flags = flags Or iif(c And &h80000000,N_FLAG,iif(c=0,Z_FLAG,0)) 
         flags = flags Or (znptable8(c And &hFF) And P_FLAG) 
@@ -210,7 +219,8 @@ End Sub
 
 
 Sub setadd8(a As UByte , b As UByte ) 
-        Dim As UShort  c=cushort(a)+cushort(b) 
+        Dim As UShort c=Any
+        c=cushort(a)+cushort(b) 
         flags = flags And inv(&h8D5) 
         flags = flags Or znptable8(c And &hFF) 
         if (c And &h100) Then flags = flags Or C_FLAG 
@@ -219,7 +229,8 @@ Sub setadd8(a As UByte , b As UByte )
 End Sub
 
 Sub setadd8nc(a As UByte , b As UByte ) 
-        Dim As UShort  c=cushort(a)+cushort(b) 
+        Dim As UShort c=Any
+        c=cushort(a)+cushort(b) 
         flags = flags And inv(&h8D4) 
         flags = flags Or znptable8(c And &hFF) 
         if (((a Xor b) And &h80)=0) And (((a Xor c) And &h80)<>0) Then flags = flags Or V_FLAG 
@@ -227,7 +238,8 @@ Sub setadd8nc(a As UByte , b As UByte )
 End Sub
 
 Sub setadc8(a As UByte , b As UByte ) 
-        Dim As UShort  c=cushort(a)+cushort(b)+tempc 
+        Dim As UShort c=Any
+        c=cushort(a)+cushort(b)+tempc 
         flags = flags And inv(&h8D5) 
         flags = flags Or znptable8(c And &hFF) 
         if (c And &h100) Then flags = flags Or C_FLAG 
@@ -236,7 +248,8 @@ Sub setadc8(a As UByte , b As UByte )
 End Sub
 
 Sub setadd16(a As UShort , b As UShort ) 
-        Dim As ULong  c=culng(a)+CULng(b) 
+        Dim As ULong c=Any
+        c=culng(a)+CULng(b) 
         flags = flags And inv(&h8D5) 
         flags = flags Or znptable16(c And &hFFFF) 
         if (c And &h10000) Then flags = flags Or C_FLAG 
@@ -245,7 +258,8 @@ Sub setadd16(a As UShort , b As UShort )
 End Sub
 
 Sub setadd16nc(a As UShort , b As UShort ) 
-        Dim As ULong  c=CULng(a)+CULng(b) 
+        Dim As ULong c=Any
+        c=CULng(a)+CULng(b) 
         flags = flags And inv(&h8D4) 
         flags = flags Or znptable16(c And &hFFFF) 
         if (((a Xor b) And &h8000)=0) And (((a Xor c) And &h8000)<>0) Then flags = flags Or V_FLAG 
@@ -253,7 +267,8 @@ Sub setadd16nc(a As UShort , b As UShort )
 End Sub
 
 Sub setadc16(a As UShort , b As UShort ) 
-        Dim As ULong  c=culng(a)+CULng(b)+tempc
+        Dim As ULong c=Any
+        c=culng(a)+CULng(b)+tempc
         flags = flags And inv(&h8D5) 
         flags = flags Or znptable16(c And &hFFFF) 
         if (c And &h10000) Then flags = flags Or C_FLAG 
@@ -262,7 +277,8 @@ Sub setadc16(a As UShort , b As UShort )
 End Sub
 
 Sub setsub8(a As UByte , b As UByte ) 
-        Dim As UShort  c=cushort(a)-cushort(b) 
+        Dim As UShort  c=Any
+        c=cushort(a)-cushort(b) 
         flags = flags And inv(&h8D5) 
         flags = flags Or znptable8(c And &hFF) 
         if (c And &h100) Then flags = flags Or C_FLAG 
@@ -271,7 +287,8 @@ Sub setsub8(a As UByte , b As UByte )
 End Sub
 
 Sub setsub8nc(a As UByte , b As UByte ) 
-        Dim As UShort  c=cushort(a)-cushort(b)
+        Dim As UShort c=Any
+        c=cushort(a)-cushort(b)
         flags = flags And inv(&h8D4) 
         flags = flags Or znptable8(c And &hFF) 
         If (((a Xor b) And (a Xor c)) And &h80) Then flags = flags Or V_FLAG
@@ -279,7 +296,8 @@ Sub setsub8nc(a As UByte , b As UByte )
 End Sub
 
 Sub setsbc8(a As UByte , b As UByte ) 
-        Dim As UShort  c=CUShort(a)-(cushort(b)+tempc) 
+        Dim As UShort c=Any
+        c=CUShort(a)-(cushort(b)+tempc) 
         flags = flags And inv(&h8D5) 
         flags = flags Or znptable8(c And &hFF) 
         if (c And &h100) Then flags = flags Or C_FLAG 
@@ -288,7 +306,8 @@ Sub setsbc8(a As UByte , b As UByte )
 End Sub
 
 Sub setsub16(a As UShort , b As UShort ) 
-        Dim As ULong  c=culng(a)-CULng(b) 
+        Dim As ULong c=Any
+        c=culng(a)-CULng(b) 
         flags = flags And inv(&h8D5) 
         flags = flags Or znptable16(c And &hFFFF) 
         if (c And &h10000) Then flags = flags Or C_FLAG 
@@ -297,7 +316,8 @@ Sub setsub16(a As UShort , b As UShort )
 End Sub
 
 Sub setsub16nc(a As UShort , b As UShort ) 
-        Dim As ULong  c=culng(a)-CULng(b) 
+        Dim As ULong c=Any
+        c=culng(a)-CULng(b) 
         flags = flags And inv(&h8D4) 
         flags = flags Or (znptable16(c And &hFFFF) And inv(4)) 
         flags = flags Or (znptable8 (c And &hFF) And 4) 
@@ -306,7 +326,8 @@ Sub setsub16nc(a As UShort , b As UShort )
 End Sub
 
 Sub setsbc16(a As UShort , b As UShort ) 
-        Dim As Ulong  c=culng(a)-(CULng(b)+tempc) 
+        Dim As Ulong c=any
+        c=culng(a)-(CULng(b)+tempc) 
         flags = flags And inv(&h8D5) 
         flags = flags Or (znptable16(c And &hFFFF) And inv(4)) 
         flags = flags Or (znptable8 (c And &hFF) And 4) 

@@ -1,76 +1,75 @@
-#Define is486 1 ' siempre a 1 , si "ademas" de 386, es 486
-#Define hasfpu 1 ' siempre a 1 si tiene FPU (486DX)
-#Define IDE_GRABA 1 ' para pruebas=1 graba, PELIGRO!!!!!!
+Const hasfpu=1 ' siempre a 1 si tiene FPU (486DX)
+const IDE_GRABA=1 ' para pruebas=1 graba, PELIGRO!!!!!!
 
-Dim Shared as Integer CPUID ' tipo de CPU, en los intel anteriores al 486DX2-66, es siempre 0. Solo cambia en los DX2-75
-Dim Shared As Integer cpu_multi ' multiplicador de CPU para el BUS de tipo DX2  (486dx2-66)
-Dim Shared As Integer CPUCLOCK ' velocidad REAL (66mhz=66666666, o sea, 66millones666mil666)
-Dim Shared As Integer cpu_exec ' para la rutina EXEC386() , seria REALSPEED/100
+static shared As Integer CPUID ' tipo de CPU, en los intel anteriores al 486DX2-66, es siempre 0. Solo cambia en los DX2-75
+static shared As Integer cpu_multi ' multiplicador de CPU para el BUS de tipo DX2  (486dx2-66)
+static shared As Integer CPUCLOCK ' velocidad REAL (66mhz=66666666, o sea, 66millones666mil666)
+static shared As Integer cpu_exec ' para la rutina EXEC386() , seria REALSPEED/100
 
-Dim Shared As Single bus_timing
+static shared As Single bus_timing
 
-Dim Shared as Integer timing_rr
-Dim Shared as Integer timing_mr, timing_mrl
-Dim Shared as Integer timing_rm, timing_rml
-Dim Shared as Integer timing_mm, timing_mml
-Dim Shared as Integer timing_bt, timing_bnt
+static shared As Integer timing_rr
+static shared As Integer timing_mr, timing_mrl
+static shared As Integer timing_rm, timing_rml
+static shared As Integer timing_mm, timing_mml
+static shared As Integer timing_bt, timing_bnt
 
 ' Program Counter
-Dim Shared As ULong pc
-Dim Shared as ULong oxpc ' copia de "pc" para algunas INS
+static shared As ULong pc
+static shared As ULong oxpc ' copia de "pc" para algunas INS
 
 ' RAM, VRAM, ROM, VROM
-Dim Shared as UByte Ptr ram,vram
-Dim Shared As UByte Ptr rom,vrom
-'Dim Shared As UByte Ptr rambios
+static shared As UByte Ptr ram,vram
+static shared As UByte Ptr rom,vrom
+'static shared As UByte Ptr rambios
 
-Dim Shared as UByte isram(256) ' creo que vale con 256, por que son 256/16=16megas --> este sobra &h10000)
-Dim Shared as ULong rammask
-Dim Shared as Long mmu_perm=4
+static shared As UByte isram(0 To 255) ' creo que vale con 256, por que son 256/16=16megas --> este sobra &h10000)
+static shared As ULong rammask
+static shared As Long mmu_perm=4
 
 ' cache
-Dim Shared as Long readlookup(256),readlookupp(256)
-Dim Shared as Long readlnext
-Dim Shared as Long writelookup(256),writelookupp(256)
-Dim Shared as Long writelnext
-Dim Shared as long cachelookup(256)
-Dim Shared as long cachelnext
+static shared As Long readlookup(0 To 255),readlookupp(0 To 255)
+static shared As Long readlnext
+static shared As Long writelookup(0 To 255),writelookupp(0 To 255)
+static shared As Long writelnext
+static shared As long cachelookup(0 To 255)
+static shared As long cachelnext
 
 ' punteros a cache
-Dim Shared as ULong Ptr readlookup2
-Dim Shared as ULong Ptr writelookup2
-Dim Shared as Byte  Ptr cachelookup2
-Dim Shared as UByte Ptr pccache2
+static shared As ULong Ptr readlookup2
+static shared As ULong Ptr writelookup2
+static shared As Byte  Ptr cachelookup2
+static shared As UByte Ptr pccache2
 
 
 
 ' PUNTEROS
-Dim Shared as ULong ptr eal_r
-Dim Shared as ULong ptr eal_w
+static shared As ULong ptr eal_r
+static shared As ULong ptr eal_w
 
 ' tabla de registros
-Dim Shared as UShort Ptr mod1add(2, 8)
-Dim Shared as ULong  Ptr mod1seg(8)
+static shared As UShort Ptr mod1add(0 To 1, 0 To 7)
+static shared As ULong  Ptr mod1seg(0 To 7)
 ' variable usada en la tabla de registros "mod1add"
-Dim Shared as Integer slowrm(8)
+static shared As Integer slowrm(0 To 7)
 ' variable cero para la tabla de registros "mod1add"
-Dim Shared as UShort zero=0
+static shared As UShort zero=0
 
 
-Dim Shared as Integer shadowbios ,shadowbios_write, grabar_bios, modo_bios
-Dim Shared as ULong pccache
-Dim Shared as UShort flags,eflags
-Dim Shared As Ulong oldds',olddslimit,olddslimitw
-Dim Shared As Ulong oldss,oldsslimit,oldsslimitw
-Dim Shared as Integer cpl_override  
+static shared As Integer shadowbios ,shadowbios_write, grabar_bios, modo_bios
+static shared As ULong pccache
+static shared As UShort flags,eflags
+static shared As Ulong oldds',olddslimit,olddslimitw
+static shared As Ulong oldss,oldsslimit,oldsslimitw
+static shared As Integer cpl_override  
 
 
-Dim Shared As Integer readflash ' no se aun que es, pero se usa mucho en el IDE
+static shared As Integer readflash ' no se aun que es, pero se usa mucho en el IDE
 
 ' variables puertos
-Dim Shared puertosb(65535) as UByte
-Dim Shared puertosw(65535) as UShort
-Dim Shared puertosl(65535) as ULong
+static shared puertosb(0 To &hFFFF) as UByte
+static shared puertosw(0 To &hFFFF) as UShort
+static shared puertosl(0 To &hFFFF) as ULong
 
 #Define EAX regs(0).l
 #Define ECX regs(1).l
@@ -113,7 +112,7 @@ Type x86reg
 	 End type
  End Union
 End Type 
-Dim Shared As x86reg regs(8)
+static shared As x86reg regs(0 To 7)
 
 type x86seg
         As ULong base0
@@ -122,9 +121,9 @@ type x86seg
         As UByte access0
         As UShort seg
 End Type
-Dim Shared as x86seg gdt,ldt,idt,tr
-Dim Shared as x86seg _cs,_ds,_es,_ss,_fs,_gs
-Dim Shared as x86seg _oldds
+static shared As x86seg gdt,ldt,idt,tr
+static shared As x86seg _cs,_ds,_es,_ss,_fs,_gs
+static shared As x86seg _oldds
 
 
 ' Segments
@@ -153,25 +152,25 @@ Type crm
         As ushort w
    End Union 
 End Type
-Dim Shared As crm CR1
+static shared As crm CR1
 #Define cr0 CR1.l
 #Define msw CR1.w
-Dim Shared as Ulong cr2,cr3
+static shared As Ulong cr2,cr3
 
 
 
-#Define C_FLAG  &h0001
-#define P_FLAG  &h0004
-#define A_FLAG  &h0010
-#define Z_FLAG  &h0040
-#define N_FLAG  &h0080
-#define T_FLAG  &h0100
-#define I_FLAG  &h0200
-#define D_FLAG  &h0400
-#define V_FLAG  &h0800
-#define NT_FLAG &h4000
-#define VM_FLAG &h0002 'In EFLAGS
-#Define WP_FLAG &h10000 'In CR0
+Const C_FLAG  =&h0001
+Const P_FLAG  =&h0004
+Const A_FLAG  =&h0010
+Const Z_FLAG  =&h0040
+Const N_FLAG  =&h0080
+Const T_FLAG  =&h0100
+Const I_FLAG  =&h0200
+Const D_FLAG  =&h0400
+Const V_FLAG  =&h0800
+Const NT_FLAG =&h4000
+Const VM_FLAG =&h0002 'In EFLAGS
+Const WP_FLAG =&h10000 'In CR0
 
 #Define CPL ((_cs.access0 Shr 5) And 3)
 #define IOPL ((flags Shr 12) And 3)
@@ -184,46 +183,46 @@ Dim Shared as Ulong cr2,cr3
 
 /'Timer'/
 type PIT0
-        Dim as ULong l(3)
-        Dim as Double c(3)
-        Dim as UByte m(3)
-        Dim as UByte ctrl,ctrls(2)
-        Dim as integer wp,rm(3),wm(3)
-        Dim as UShort rl(3)
-        Dim as Integer thit(3)
-        Dim as Integer delay(3)
-        Dim as Integer rereadlatch(3)
+        Dim as ULong l(0 To 2)
+        Dim as Double c(0 To 2)
+        Dim as UByte m(0 To 2)
+        Dim as UByte ctrl,ctrls(0 To 1)
+        Dim as integer wp,rm(0 To 2),wm(0 To 2)
+        Dim as UShort rl(0 To 2)
+        Dim as Integer thit(0 To 2)
+        Dim as Integer delay(0 To 2)
+        Dim as Integer rereadlatch(0 To 2)
 End Type
-Dim Shared as PIT0 pit
+static shared As PIT0 pit
 
 /'DMA'/
 type DMA0
-        Dim as UShort ab(4)
-        Dim As UShort ac(4)
-        Dim as UShort cb(4)
-        Dim as Integer cc(4)
+        Dim as UShort ab(0 To 3)
+        Dim As UShort ac(0 To 3)
+        Dim as UShort cb(0 To 3)
+        Dim as Integer cc(0 To 3)
         Dim as Integer wp
         Dim as UByte m
-        Dim As UByte mode(4)
-        Dim as UByte page(4)
+        Dim As UByte mode(0 To 3)
+        Dim as UByte page(0 To 3)
         Dim as UByte stat
         Dim as UByte command0
 End Type
-Dim Shared As DMA0 dma,dma16
+static shared As DMA0 dma,dma16
 
 /'PPI'/
 type PPI0
         Dim As Integer s2
         Dim As UByte pa,pb
 End Type
-Dim Shared As PPI0 ppi
+static shared As PPI0 ppi
 
 
 
 
 
 ' modulo PIC i8259 (control de interrupciones IRQ)
-Dim Shared as Integer pic_intpending
+static shared As Integer pic_intpending
 
 Declare Sub pic_init()  
 Declare Sub pic2_init()  
@@ -239,19 +238,19 @@ Type PIC0
         Dim As UByte vector
         Dim As Integer read0
 End Type
-Dim Shared As PIC0 pic,pic2 
+static shared As PIC0 pic,pic2 
 
 
 
 ' contadores 
-Dim Shared as Single rtctime
-Dim Shared as Single vidtime
-Dim Shared as Single VGACONST1
-Dim Shared as Single VGACONST2
-Dim Shared as Single RTCCONST
+static shared As Single rtctime
+static shared As Single vidtime
+static shared As Single VGACONST1
+static shared As Single VGACONST2
+static shared As Single RTCCONST
 
 /'Keyboard'/
-Dim Shared as Integer keybsenddelay
+static shared As Integer keybsenddelay
 
 
 '''''''''''''''''''
@@ -261,58 +260,64 @@ Dim Shared as Integer keybsenddelay
 
 '''' variables modulo x86
 '
-Dim Shared as ULong easeg,eaaddr
-Dim Shared As ULong ealimit,ealimitw
-Dim Shared as UShort ea_rseg
+static shared As ULong easeg,eaaddr
+static shared As ULong ealimit,ealimitw
+static shared As UShort ea_rseg
 
-#Define JMP 1
-#Define CALL0 2
-#Define IRET 3
-#Define INT0 4
-
-
-' flags Z, N y P
-Dim Shared as ULong flags_zn
-Dim Shared as ubyte flags_p
-#Define FLAG_N (flags_zn Shr 31)
-#Define FLAG_Z (flags_zn)
-#define FLAG_P (znptable8(flags_p) And P_FLAG)
-
+Const JMP =1
+Const CALL0 =2
+Const IRET =3
+Const INT0 =4
 
 ' estas dos variables apuntan con un define a la misma variable, y ambas afectan su contenido
-Dim Shared as Ulong rmdat32
+static shared As Ulong rmdat32
 #Define fetchdat rmdat32
 #Define rmdat rmdat32
 
-Dim Shared as UShort oldcs
-Dim Shared as ULong oldpc
-Dim Shared as ULong oldcpl
-Dim Shared as Integer tempc
-Dim Shared as Integer cycles
-Dim Shared as Integer ssegs
-Dim Shared as Integer firstrepcycle
-Dim Shared as Integer rm,reg,modo
-Dim Shared as Integer inhlt
-Dim Shared as UByte opcode
-Dim Shared as Integer ins
-Dim Shared as Integer noint
-Dim Shared as Integer inint
-Dim Shared as UShort lastcs,lastpc
-Dim Shared as UByte znptable8(256)
-Dim Shared as UShort znptable16(65536)
-Dim Shared as integer use32
-Dim Shared As ULong op32
-Dim Shared as Integer stack32
-Dim Shared as Integer optype
-Dim Shared as Integer cgate16,cgate32
-Dim Shared as Integer stimes= 0
-Dim Shared as Integer dtimes= 0
-Dim Shared as Integer btimes= 0
-Dim Shared as Integer intgatesize=16 ' por defecto, lo pongo en 16, por que sino, puede dar error en "x86_doabrt"
-Dim Shared as Integer gpf
-Dim Shared as Integer abrt
-Dim Shared as ULong abrt_error
-Dim Shared as Byte opcode2
+static shared As UShort oldcs
+static shared As ULong oldpc
+static shared As ULong oldcpl
+static shared As Integer tempc
+static shared As Integer cycles
+static shared As Integer ssegs
+static shared As Integer firstrepcycle
+static shared As Integer rm,reg,modo
+static shared As Integer inhlt
+static shared As UByte opcode
+static shared As Integer ins
+static shared As Integer noint
+static shared As Integer inint
+static shared As UShort lastcs,lastpc
+static shared As UByte znptable8(0 To &hFF)
+static shared As UShort znptable16(0 To &hFFFF)
+static shared As integer use32
+static shared As ULong op32
+static shared As Integer stack32
+static shared As Integer optype
+static shared As Integer cgate16,cgate32
+static shared As Integer stimes= 0
+static shared As Integer dtimes= 0
+static shared As Integer btimes= 0
+static shared As Integer intgatesize=16 ' por defecto, lo pongo en 16, por que sino, puede dar error en "x86_doabrt"
+static shared As Integer gpf
+static shared As Integer abrt
+static shared As ULong abrt_error
+static shared As Byte opcode2
+
+
+
+' flags Z, N y P
+static shared As ULong flags_zn
+static shared As ubyte flags_p
+function FLAG_N() As UByte
+	return (flags_zn Shr 31)
+End Function
+function FLAG_Z() As UByte
+	Return (flags_zn)
+End Function
+function FLAG_P() As ubyte
+	Return (znptable8(flags_p) And P_FLAG)
+End Function
 
 
 ' posibles errores en memoria (variable ABRT)
@@ -332,7 +337,7 @@ End Enum
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 ' en modulo X86.BAS
-Declare Sub resetx86(i486 As integer) '1=486, 0=386
+Declare Sub resetx86(reset_cpu As integer) 
 Declare Sub softresetx86()
 Declare Sub makemod1table()
 Declare Sub makeznptable()
@@ -355,7 +360,7 @@ declare Sub loadCMOS(bios As string)
 
 
 Function inv(a As uLongint) As uLongint
-	Return -1-1*(a)
+	Return Not(a)
 End Function
 
 Function modoprotegido() As UShort

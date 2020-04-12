@@ -1,12 +1,12 @@
-Dim Shared As Integer key(256) ' guarda la pulsacion de cada tecla
+Static shared As Integer key(0 To 255) ' guarda la pulsacion de cada tecla
 Static Shared tiempo_teclado As Double
 
 Declare Sub keyboard_at_adddata(f As ubyte)
 Declare Sub keyboard_at_adddata_keyboard(valor As UByte ) 
 function LeeTeclado() As Integer
-    Static tecla As Integer
-    Static teclashift As Integer
-    Static oldtecla As Integer
+    Static tecla As Integer=Any
+    Static teclashift As Integer=Any
+    Static oldtecla As Integer=Any
 
 
 	' envia la orden de "fin de pulsacion", añadiendo &h80 al codigo
@@ -104,7 +104,6 @@ function LeeTeclado() As Integer
    If MultiKey(SC_RWIN) Then tecla=&h7E
    If MultiKey(SC_MENU) Then tecla=&h7F
    
-   
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''   
    ' rutina para tratar de reproducir la repeticion de teclas
 	If tiempo_teclado=1000 Then 
@@ -135,7 +134,7 @@ aaa:
 	If tecla Then keyboard_at_adddata(tecla)
 
    oldtecla=tecla
-   
+
    Return tecla
 End Function
 

@@ -1,8 +1,8 @@
-Dim Shared as ULong x87_pc_off
-Dim Shared as ULong x87_op_off
+Static shared As ULong x87_pc_off
+static shared As ULong x87_op_off
 
-Dim Shared as UShort x87_pc_seg
-Dim Shared as UShort x87_op_seg
+static shared As UShort x87_pc_seg
+static shared As UShort x87_op_seg
 
 Declare Sub x87_d8()
 Declare Sub x87_d9()
@@ -13,19 +13,19 @@ Declare Sub x87_dd()
 Declare Sub x87_de()
 Declare Sub x87_df()
 
-Dim Shared as Double STD(8)
-Dim Shared as UShort npxs,npxc,tag
-Dim Shared as integer TOP
+static shared As Double STD(0 To 7)
+static shared As UShort npxs,npxc,tag
+static shared As integer TOP
 
 #Define ST(x) (STD((TOP+(x)) And 7))
 
-#Define C0 (1 Shl 8)
-#Define C1 (1 Shl 9)
-#Define C2 (1 Shl 10)
-#Define C3 (1 Shl 14)
+Const C0 =(1 Shl 8)
+Const C1 =(1 Shl 9)
+Const C2 =(1 Shl 10)
+Const C3 =(1 Shl 14)
 
-#Define BIAS80 16383
-#define BIAS64 1023
+Const BIAS80 =16383
+Const BIAS64 =1023
 
 
 		
@@ -67,7 +67,7 @@ Function x87_fround(b As Double ) As LongInt
 End Function
 
 ' no funciona bien, la anulo por ahora.
-#define STATUS_ZERODIVIDE 4
+const STATUS_ZERODIVIDE=4
 Function x87_div(ByRef dst As double, src1 As double, src2 As Double) As Integer  
 	'Do
           'If src2 = 0.0 Then                                      
@@ -956,11 +956,11 @@ Sub x87_de()
                         npxs = npxs And inv(C0 Or C2 Or C3)
                         
                         ' esto de la 9.1 no se si usarlo, es un lio, y ... tiene utilidad?
-                        If (CULngInt(ST(0))=(1 Shl 63)) And (CULngInt(ST(1))=0) Then
-                        	npxs = npxs Or C0 ' Nasty hack to fix 80387 detection
-                        ElseIf (ST(0)=ST(1)) Then ' este sustituye al que sigue de la 7.0
+                        'If (CULngInt(ST(0))=(1 Shl 63)) And (CULngInt(ST(1))=0) Then
+                        '	npxs = npxs Or C0 ' Nasty hack to fix 80387 detection
+                        'ElseIf (ST(0)=ST(1)) Then ' este sustituye al que sigue de la 7.0
                         
-                        'If ST(0)=ST(1) Then ' este seria el viejo de la 7.0
+                        If ST(0)=ST(1) Then ' este seria el viejo de la 7.0
                            npxs = npxs Or C3 
                         ElseIf ST(0)<ST(1) Then
 									npxs = npxs Or C0

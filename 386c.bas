@@ -1,19 +1,19 @@
 
 
 Sub exec386(ByVal cycs As Integer) 
-        Dim As ULongInt temp64 
+        Dim As ULongInt temp64=Any
         'Dim As LongInt temp64i 
-        Dim As UByte temp,temp2 
-        Dim As UShort tempw,tempw2,tempw3,tempw4
-        Dim As Byte offset 
-        Dim As Byte temps
-        Dim As Short temps16 ' SOLO se usa en "IDIV AX,w", y solo una vez.
-        Dim As long tempws,tempws2
-        Dim As ULong templ,templ2,templ3,addr
-        Dim As Integer c,cycdiff 
-        Dim As Integer oldcyc 
-        Dim As integer tempi 
-        Dim As integer trap 
+        Dim As UByte temp=Any,temp2=any 
+        Dim As UShort tempw=any,tempw2=any,tempw3=any,tempw4=Any
+        Dim As Byte offset =Any
+        Dim As Byte temps=Any
+        Dim As Short temps16=Any ' SOLO se usa en "IDIV AX,w", y solo una vez.
+        Dim As long tempws=any,tempws2=Any
+        Dim As ULong templ=any,templ2=any,templ3=any,addr=Any
+        Dim As Integer c=any,cycdiff=Any 
+        Dim As Integer oldcyc=Any 
+        Dim As integer tempi=Any 
+        Dim As integer trap =any
 
         cycles+=cycs 
         
@@ -43,16 +43,16 @@ Sub exec386(ByVal cycs As Integer)
                 fetchdat=(fetchdat shr 8) 'And &hffff 
 
             
-If (deb=4) Then 
-  If ((opcode<>&hF2  And  opcode<>&hF3)  Or  (firstrepcycle>0)) Then 
-     If ( skipnextprint=0) Then 
-		Print #1,Hex(CS1,4);"(";hex(cs0,6);"):";hex(pc,4);" : ";hex(EAX,8);" ";hex(EBX,8);" ";hex(ECX,8);" ";hex(EDX,8);" ";hex(CS1,4);" ";hex(DS1,4);" ";hex(ES1,4);"(";Hex(es0,8);") ";
-		Print #1,Hex(FS1,4);" ";hex(GS1,4);" ";hex(SS1,4);"(";hex(ss0,8);") ";hex(EDI,8);" ";hex(ESI,8);" ";hex(EBP,8);" SP=";hex(SS1,4);":";hex(ESP,8);" ";Hex(opcode,2);" ";hex(flags,4);'" ";
-		Print #1,ins;" ";hex(writelookup2,8);"  ";hex(ldt.base0,8);CPL;stack32;" ";hex(pic.pend,2);" ";hex(pic.mask,2);" ";hex(pic.mask2,2);"   ";hex(pic2.pend,2);" ";hex(pic2.mask,2);" ";hex(readmode,2) 
-     EndIf
-     skipnextprint=0 
-  EndIf
-EndIf
+''if (deb=4) Then 
+'  If ((opcode<>&hF2  And  opcode<>&hF3)  Or  (firstrepcycle>0)) Then 
+'     If ( skipnextprint=0) Then 
+'		Print #1,Hex(CS1,4);"(";hex(cs0,6);"):";hex(pc,4);" : ";hex(EAX,8);" ";hex(EBX,8);" ";hex(ECX,8);" ";hex(EDX,8);" ";hex(CS1,4);" ";hex(DS1,4);" ";hex(ES1,4);"(";Hex(es0,8);") ";
+'		Print #1,Hex(FS1,4);" ";hex(GS1,4);" ";hex(SS1,4);"(";hex(ss0,8);") ";hex(EDI,8);" ";hex(ESI,8);" ";hex(EBP,8);" SP=";hex(SS1,4);":";hex(ESP,8);" ";Hex(opcode,2);" ";hex(flags,4);'" ";
+'		Print #1,ins;" ";hex(writelookup2,8);"  ";hex(ldt.base0,8);CPL;stack32;" ";hex(pic.pend,2);" ";hex(pic.mask,2);" ";hex(pic.mask2,2);"   ";hex(pic2.pend,2);" ";hex(pic2.mask,2);" ";hex(readmode,2) 
+'     EndIf
+'     skipnextprint=0 
+'  EndIf
+'EndIf
 
 
 
@@ -182,7 +182,7 @@ EndIf
                                 loadseg(tempw, _es):            if abrt then exit Select 
                                 SP+=2 
                         EndIf
-                        cycles-=iif((is486),3,7 )
+                        cycles-=3
                         Exit Select 
                 	case &h107, &h307  /'POP ES'/
                         if ssegs Then ss0=oldss 
@@ -195,7 +195,7 @@ EndIf
                                 loadseg(tempw, _es):            if abrt then exit Select 
                                 SP+=4 
                         EndIf
-                        cycles-=iif((is486),3,7 )
+                        cycles-=3
                         Exit Select 
                         '''''''''''''''''''''''
                         
@@ -323,7 +323,7 @@ EndIf
                                         Exit Select 
                                 	case &h10  /'LLDT'/
                                         if ((CPL<>0) Or ((eflags And VM_FLAG)<>0)) And ((cr0 And 1)<>0) Then 
-                                                if deb=3 then print #5,"Invalid LLDT"
+                                                'if deb=3 then print #5,"Invalid LLDT"
                                                 x86gpf(0) 
                                                 Exit Select
                                         EndIf
@@ -344,7 +344,7 @@ EndIf
                                         Exit Select 
                                 	case &h18  /'LTR'/
                                         if ((CPL<>0) Or ((eflags And VM_FLAG)<>0)) And ((cr0 And 1)<>0) Then 
-                                                if deb=3 then print #5,"Invalid LTR" 
+                                                'if deb=3 then print #5,"Invalid LTR" 
                                                 x86gpf(0) 
                                                 Exit Select 
                                         EndIf
@@ -404,7 +404,7 @@ EndIf
                                         cycles-=20 
                                         Exit Select 
                                 	case Else 
-                                        if deb=3 then print #5,"Bad 0F 00 opcode ",hex(rmdat and &h38,2)
+                                        'if deb=3 then print #5,"Bad 0F 00 opcode ",hex(rmdat and &h38,2)
                                         pc-=3 
                                         x86illegal() 
                                         Exit Select 
@@ -427,7 +427,7 @@ EndIf
                                         Exit Select 
                                 	case &h10  /'LGDT'/
                                         if ((CPL<>0) Or ((eflags And VM_FLAG)<>0)) And ((cr0 and 1)<>0) Then 
-                                                if deb=3 then print #5,"Invalid LGDT" 
+                                                'if deb=3 then print #5,"Invalid LGDT" 
                                                 x86gpf(0) 
                                                 Exit Select 
                                         EndIf
@@ -440,7 +440,7 @@ EndIf
                                         Exit Select 
                                 	case &h18  /'LIDT'/
                                         if ((CPL<>0) Or ((eflags And VM_FLAG)<>0)) And ((cr0 and 1)<>0) Then 
-                                                if deb=3 then print #5,"Invalid LIDT" 
+                                                'if deb=3 then print #5,"Invalid LIDT" 
                                                 x86gpf(0) 
                                                 Exit Select 
                                         EndIf
@@ -452,16 +452,12 @@ EndIf
                                         cycles-=11 
                                         Exit Select 
                                 	case &h20  /'SMSW'/
-                                        if (is486) Then 
-                                             seteaw(msw) 
-                                        else
-                                             seteaw(msw Or &hFF00)
-                                        EndIf
+                                        seteaw(msw) 
                                         cycles-=2 
                                         Exit Select 
                                 	case &h30  /'LMSW'/
                                         if ((CPL<>0) Or ((eflags And VM_FLAG)<>0))  And (modoprotegido=1) Then 
-                                                if deb=3 then print #5,"LMSW - ring not zero" 
+                                                'if deb=3 then print #5,"LMSW - ring not zero" 
                                                 x86gpf(0) 
                                                 Exit Select 
                                         EndIf
@@ -470,7 +466,7 @@ EndIf
                                         msw=tempw 
                                         Exit Select 
                                 	case Else 
-                                        if deb=3 then print #5,"Bad 0F 01 opcode ",hex(rmdat and &h38,2) 
+                                        'if deb=3 then print #5,"Bad 0F 01 opcode ",hex(rmdat and &h38,2) 
                                         pc-=3 
                                         x86illegal() 
                                         Exit Select 
@@ -565,7 +561,7 @@ EndIf
                                 Exit Select 
                         	case 6  /'CLTS'/
                                 if ((CPL<>0) Or ((eflags And VM_FLAG)<>0)) And ((cr0 and 1)<>0) Then 
-                                        if deb=3 then print #5,"Can't CLTS" 
+                                        'if deb=3 then print #5,"Can't CLTS" 
                                         x86gpf(0) 
                                         Exit Select 
                                 EndIf
@@ -573,16 +569,16 @@ EndIf
                                 cycles-=5 
                                 Exit Select 
                         	case 8  /'INVD'/
-                                if ( is486=0) Then goto inv16 
+                                'if ( is486=0) Then goto inv16 
                                 cycles-=1000 
                                 Exit Select 
                         	case 9  /'WBINVD'/
-                                if (is486=0) Then goto inv16 
+                                'if (is486=0) Then goto inv16 
                                 cycles-=10000 
                                 Exit Select 
                         	case &h20  /'MOV reg32,CRx'/
                                 if ((CPL<>0) Or ((eflags And VM_FLAG)<>0)) And ((cr0 and 1)<>0) Then 
-                                        if deb=3 then print #5,"Can't load from CRx" 
+                                        'if deb=3 then print #5,"Can't load from CRx" 
                                         x86gpf(0) 
                                         Exit Select 
                                 EndIf
@@ -590,7 +586,7 @@ EndIf
                                 Select Case As Const  (reg)
                                 	Case 0 
                                         regs(rm).l=cr0
-                                        if (is486) Then regs(rm).l = regs(rm).l Or &h10 /'ET hardwired on 486'/
+                                        regs(rm).l = regs(rm).l Or &h10 /'ET hardwired on 486'/
                                         Exit Select 
                                 	Case 2 
                                         regs(rm).l=cr2 
@@ -599,7 +595,7 @@ EndIf
                                         regs(rm).l=cr3 
                                         Exit Select 
                                 	case Else 
-                                        if deb=3 then print #5,"Bad read of CR ",rmdat And 7,reg 
+                                        'if deb=3 then print #5,"Bad read of CR ",rmdat And 7,reg 
                                         pc=oldpc 
                                         x86illegal() 
                                         Exit Select 
@@ -608,7 +604,7 @@ EndIf
                                 Exit Select 
                         	case &h21  /'MOV reg32,DRx'/
                                 if ((CPL<>0) Or ((eflags And VM_FLAG)<>0)) And ((cr0 and 1)<>0) Then 
-                                        if deb=3 then print #5,"Can't load from DRx" 
+                                        'if deb=3 then print #5,"Can't load from DRx" 
                                         x86gpf(0) 
                                         Exit Select 
                                 EndIf
@@ -618,7 +614,7 @@ EndIf
                                 Exit Select 
                         	case &h22  /'MOV CRx,reg32'/
                                 if ((CPL<>0) Or ((eflags And VM_FLAG)<>0)) And ((cr0 and 1)<>0) Then 
-                                        if deb=3 then print #5,"Can't load CRx" 
+                                        'if deb=3 then print #5,"Can't load CRx" 
                                         x86gpf(0) 
                                         Exit Select 
                                 EndIf
@@ -640,7 +636,7 @@ EndIf
                                         flushmmucache() 
                                         Exit Select 
                                 	case Else 
-                                        if deb=3 then print #5,"Bad load CR ",reg 
+                                        'if deb=3 then print #5,"Bad load CR ",reg 
                                         pc=oldpc 
                                         x86illegal() 
                                         Exit Select 
@@ -649,7 +645,7 @@ EndIf
                                 Exit Select 
                         	case &h23  /'MOV DRx,reg32'/
                                 if ((CPL<>0) Or ((eflags And VM_FLAG)<>0)) And ((cr0 and 1)<>0) Then 
-                                        if deb=3 then print #5,"Can't load DRx" 
+                                        'if deb=3 then print #5,"Can't load DRx" 
                                         x86gpf(0) 
                                         Exit Select 
                                 EndIf
@@ -658,7 +654,7 @@ EndIf
                                 Exit Select 
                         	case &h24  /'MOV reg32,TRx'/
                                 if ((CPL<>0) Or ((eflags And VM_FLAG)<>0)) And ((cr0 and 1)<>0) Then 
-                                        if deb=3 then print #5,"Can't load from TRx" 
+                                        'if deb=3 then print #5,"Can't load from TRx" 
                                         x86gpf(0) 
                                         Exit Select 
                                 EndIf
@@ -668,7 +664,7 @@ EndIf
                                 Exit Select 
                         	case &h26  /'MOV TRx,reg32'/
                                 if ((CPL<>0) Or ((eflags And VM_FLAG)<>0)) And ((cr0 and 1)<>0) Then 
-                                        if deb=3 then print #5,"Can't load TRx" 
+                                        'if deb=3 then print #5,"Can't load TRx" 
                                         x86gpf(0) 
                                         Exit Select 
                                 EndIf
@@ -908,7 +904,7 @@ EndIf
                                         loadseg(tempw, _fs):            if abrt then exit Select 
                                         SP+=2 
                                 EndIf
-                                cycles-=iif((is486),3,7 )
+                                cycles-=3
                                 Exit Select 
                         	case &hA3  /'BT r16'/
                                 fetchea2() : if abrt then exit Select 
@@ -979,7 +975,7 @@ EndIf
                                         loadseg(tempw, _gs):            if abrt then exit Select 
                                         SP+=2 
                                 EndIf
-                                cycles-=iif((is486),3,7 )
+                                cycles-=3
                                 Exit Select 
                         	case &hAB  /'BTS r16'/
                                 fetchea2() : if abrt then exit Select 
@@ -1038,7 +1034,7 @@ EndIf
                                 cycles-=18 
                                 Exit Select 
                         	case &hB0  /'CMPXCHG rm8, reg8'/
-                                if ( is486=0) Then goto inv16 
+                                'if ( is486=0) Then goto inv16 
                                 fetchea2() : if abrt then exit Select 
                                 temp = geteab() 
                                 setsub8(AL, temp) 
@@ -1174,7 +1170,7 @@ EndIf
                                         cycles-=6 
                                         Exit Select 
                                 	case Else 
-                                        if deb=3 then print #5,"Bad 0F BA opcode ",hex(rmdat and &h38,2)
+                                        'if deb=3 then print #5,"Bad 0F BA opcode ",hex(rmdat and &h38,2)
                                         pc=oldpc 
                                         x86illegal() 
                                         Exit Select 
@@ -1187,7 +1183,7 @@ EndIf
                                         flags  = flags  Or  Z_FLAG 
                                 else
                                         for  tempi = 0 To 15
-                                                cycles -= IIf((is486) , 1 , 3 )
+                                                cycles -= 1
                                                 if (tempw  And (1  Shl  tempi)) Then 
                                                         flags  = flags  And  inv(Z_FLAG) 
                                                         regs(reg).w = tempi 
@@ -1195,7 +1191,7 @@ EndIf
                                                 EndIf
                                        Next
                                 EndIf
-                                cycles -= IIf((is486) , 6 , 10) 
+                                cycles -=6 
                                 Exit Select 
                         	case &hBD  /'BSR w'/
                                 fetchea2() : if abrt then exit Select 
@@ -1212,7 +1208,7 @@ EndIf
                                                 EndIf
                                        Next
                                 EndIf
-                                cycles -= iif((is486) , 6 , 10 )
+                                cycles -=6
                                 Exit Select 
                         	case &hA2  /'CPUID'/
                                 If (CPUID) Then 
@@ -1267,7 +1263,7 @@ EndIf
                                 cycles-=70 
                                 Exit Select 
                         	case Else 
-                                if deb=3 then print #5,"Instruccion 16-bit 0F opcode 386 mala ",temp,ins
+                                'if deb=3 then print #5,"Instruccion 16-bit 0F opcode 386 mala ",temp,ins
                                 pc=oldpc 
                                 x86illegal() 
                                 Exit Select 
@@ -1295,7 +1291,7 @@ EndIf
                                         Exit Select 
                                 	case &h10  /'LLDT'/
                                         if ((CPL<>0) Or ((eflags And VM_FLAG)<>0))   And  ((cr0 And 1)<>0) Then 
-                                                if deb=3 then print #5,"Invalid LLDT32" 
+                                                'if deb=3 then print #5,"Invalid LLDT32" 
                                                 x86gpf(0) 
                                                 Exit Select 
                                         EndIf
@@ -1316,7 +1312,7 @@ EndIf
                                         Exit Select 
                                 	case &h18  /'LTR'/
                                         if ((CPL<>0) Or ((eflags And VM_FLAG)<>0))   And  ((cr0 And 1)<>0) Then 
-                                                if deb=3 then print #5,"Invalid LTR32" 
+                                                'if deb=3 then print #5,"Invalid LTR32" 
                                                 x86gpf(0) 
                                                 Exit Select 
                                         EndIf
@@ -1378,7 +1374,7 @@ EndIf
                                         cycles-=20 
                                         Exit Select 
                                 	case Else 
-                                        if deb=3 then print #5,"Bad 0F 00 opcode ",hex(rmdat and &h38,2) 
+                                        'if deb=3 then print #5,"Bad 0F 00 opcode ",hex(rmdat and &h38,2) 
                                         pc=oldpc 
                                         x86illegal() 
                                         Exit Select 
@@ -1399,7 +1395,7 @@ EndIf
                                         Exit Select 
                                 	case &h10  /'LGDT'/
                                         if ((CPL<>0) Or ((eflags And VM_FLAG)<>0)) And ((cr0 and 1)<>0) Then 
-                                                if deb=3 then print #5,"Invalid LGDT32" 
+                                                'if deb=3 then print #5,"Invalid LGDT32" 
                                                 x86gpf(0) 
                                                 Exit Select 
                                         EndIf
@@ -1412,7 +1408,7 @@ EndIf
                                         Exit Select 
                                 	case &h18  /'LIDT'/
                                         if ((CPL<>0) Or ((eflags And VM_FLAG)<>0)) And ((cr0 and 1)<>0) Then 
-                                                if deb=3 then print #5,"Invalid LIDT32" 
+                                                'if deb=3 then print #5,"Invalid LIDT32" 
                                                 x86gpf(0) 
                                                 Exit Select 
                                         EndIf
@@ -1434,7 +1430,7 @@ EndIf
                                         Exit Select 
                                 	case &h30  /'LMSW'/
                                         if ((CPL<>0) Or ((eflags And VM_FLAG)<>0))   And (modoprotegido=1) Then 
-                                                if deb=3 then print #5,"LMSW - ring not zero" 
+                                                'if deb=3 then print #5,"LMSW - ring not zero" 
                                                 x86gpf(0) 
                                                 Exit Select 
                                         EndIf
@@ -1443,19 +1439,17 @@ EndIf
                                         msw=tempw 
                                         Exit Select 
                                 	case &h38  /'INVLPG'/
-                                        if (is486) Then 
-                                                if ((CPL<>0) Or ((eflags And VM_FLAG)<>0)) And ((cr0 and 1)<>0) Then 
-                                                        if deb=3 then print #5,"Invalid INVLPG" 
-                                                        x86gpf(0) 
-                                                        Exit Select 
-                                                EndIf
-                                                if (deb=3) Then print #5,"INVLPG  + ", eaaddr, DS1
-                                                flushmmucache_cr3() ' en lugar de "mmu_invalidate(ds0 + eaaddr)" uso este
-                                                cycles-=12 
-                                                Exit Select 
-                                        EndIf
+                                       if ((CPL<>0) Or ((eflags And VM_FLAG)<>0)) And ((cr0 and 1)<>0) Then 
+                                               'if deb=3 then print #5,"Invalid INVLPG" 
+                                               x86gpf(0) 
+                                               Exit Select 
+                                       EndIf
+                                       'if (deb=3) Then print #5,"INVLPG  + ", eaaddr, DS1
+                                       flushmmucache_cr3() ' en lugar de "mmu_invalidate(ds0 + eaaddr)" uso este
+                                       cycles-=12 
+                                       Exit Select 
                                 	Case Else 
-                                        if deb=3 then print #5,"Bad 0F 01 opcode ",hex(rmdat and &h38,2) 
+                                        'if deb=3 then print #5,"Bad 0F 01 opcode ",hex(rmdat and &h38,2) 
                                         pc=oldpc 
                                         x86illegal() 
                                         Exit Select 
@@ -1496,16 +1490,16 @@ EndIf
                                 if NOTRM() then exit Select
                                 fetchea2() : if abrt then exit Select 
                                 tempw=geteaw(): if abrt then exit Select 
-                                if (deb=3) Then print #5,"LSL ",tempw 
+                                'if (deb=3) Then print #5,"LSL ",tempw 
                                 if (tempw And &hFFFC)=0 Then 
                                       flags = flags And inv(Z_FLAG): Exit Select  
                                 EndIf /'NULO selector'/
                                 cpl_override=1 
                                 tempi=(tempw And inv(7))<iif((tempw And 4),ldt.limit,gdt.limit) 
-                                if (deb=3) Then print #5,"In range? ",tempi 
+                                'if (deb=3) Then print #5,"In range? ",tempi 
                                 if (tempi) Then 
                                         tempw2=readmemw_386(0,iif((tempw And 4),ldt.base0,gdt.base0)+(tempw And inv(7))+4) 
-                                        if (deb=3) Then print #5,"segdat(2) = ",tempw2 
+                                        'if (deb=3) Then print #5,"segdat(2) = ",tempw2 
                                 EndIf
                                 cpl_override=0 
                                 if abrt Then exit Select 
@@ -1533,7 +1527,7 @@ EndIf
                                 Exit Select 
                         	case 6  /'CLTS'/
                                 if ((CPL<>0) Or ((eflags And VM_FLAG)<>0)) And ((cr0 and 1)<>0) Then 
-                                        if deb=3 then print #5,"Can't CLTS" 
+                                        'if deb=3 then print #5,"Can't CLTS" 
                                         x86gpf(0) 
                                         Exit Select 
                                 EndIf
@@ -1541,16 +1535,16 @@ EndIf
                                 cycles-=5 
                                 Exit Select 
                         	case 8  /'INVD'/
-                                if ( is486=0) Then goto inv32 
+                                'if ( is486=0) Then GoTo inv32 
                                 cycles-=1000 
                                 Exit Select 
                         	case 9  /'WBINVD'/
-                                if ( is486=0) Then goto inv32 
+                                'if ( is486=0) Then goto inv32 
                                 cycles-=10000 
                                 Exit Select 
                         	case &h20  /'MOV reg32,CRx'/
                                 if ((CPL<>0) Or ((eflags And VM_FLAG)<>0)) And ((cr0 and 1)<>0) Then 
-                                        If deb=2 Then Print #5,"Can't load from CRx" 
+                                        'if deb=2 Then Print #5,"Can't load from CRx" 
                                         x86gpf(0) 
                                         Exit Select 
                                 EndIf
@@ -1558,7 +1552,7 @@ EndIf
                                 Select Case As Const  (reg)
                                 	Case 0 
                                         regs(rm).l=cr0
-                                        if (is486) Then regs(rm).l = regs(rm).l Or &h10 /'ET hardwired on 486'/
+                                        regs(rm).l = regs(rm).l Or &h10 /'ET hardwired on 486'/
                                         Exit Select 
                                 	Case 2 
                                         regs(rm).l=cr2 
@@ -1567,7 +1561,7 @@ EndIf
                                         regs(rm).l=cr3 
                                         Exit Select 
                                 	case Else 
-                                        if deb=3 then print #5,"Bad read of CR ",rmdat And 7,reg
+                                        'if deb=3 then print #5,"Bad read of CR ",rmdat And 7,reg
                                         pc=oldpc 
                                         x86illegal() 
                                         Exit Select 
@@ -1576,7 +1570,7 @@ EndIf
                                 Exit Select  
                         	case &h21  /'MOV reg32,DRx'/
                                 if ((CPL<>0) Or ((eflags And VM_FLAG)<>0)) And ((cr0 and 1)<>0) Then 
-                                        if deb=3 then print #5,"Can't load from DRx" 
+                                        'if deb=3 then print #5,"Can't load from DRx" 
                                         x86gpf(0) 
                                         Exit Select 
                                 EndIf
@@ -1586,7 +1580,7 @@ EndIf
                                 Exit Select 
                         	case &h22  /'MOV CRx,reg32'/
                                 if ((CPL<>0) Or ((eflags And VM_FLAG)<>0)) And ((cr0 and 1)<>0) Then 
-                                        if deb=3 then print #5,"Can't load CRx" 
+                                        'if deb=3 then print #5,"Can't load CRx" 
                                         x86gpf(0) 
                                         Exit Select 
                                 EndIf
@@ -1608,7 +1602,7 @@ EndIf
                                         flushmmucache() 
                                         Exit Select 
                                 	case Else 
-                                        if deb=3 then print #5,"Bad load CR ",reg
+                                        'if deb=3 then print #5,"Bad load CR ",reg
                                         pc=oldpc 
                                         x86illegal() 
                                         Exit Select 
@@ -1617,7 +1611,7 @@ EndIf
                                 Exit Select 
                         	case &h23  /'MOV DRx,reg32'/
                                 if ((CPL<>0) Or ((eflags And VM_FLAG)<>0)) And ((cr0 and 1)<>0) Then 
-                                        if deb=3 then print #5,"Can't load DRx" 
+                                        'if deb=3 then print #5,"Can't load DRx" 
                                         x86gpf(0) 
                                         Exit Select 
                                 EndIf
@@ -1626,7 +1620,7 @@ EndIf
                                 Exit Select 
                         	case &h24  /'MOV reg32,TRx'/
                                 if ((CPL<>0) Or ((eflags And VM_FLAG)<>0)) And ((cr0 and 1)<>0) Then 
-                                        if deb=3 then print #5,"Can't load from TRx" 
+                                        'if deb=3 then print #5,"Can't load from TRx" 
                                         x86gpf(0) 
                                         Exit Select 
                                 EndIf
@@ -1636,7 +1630,7 @@ EndIf
                                 Exit Select 
                         	case &h26  /'MOV TRx,reg32'/
                                 if ((CPL<>0) Or ((eflags And VM_FLAG)<>0)) And ((cr0 and 1)<>0) Then 
-                                        if deb=3 then print #5,"Can't load TRx" 
+                                        'if deb=3 then print #5,"Can't load TRx" 
                                         x86gpf(0) 
                                         Exit Select 
                                 EndIf
@@ -1646,30 +1640,30 @@ EndIf
                         	case &h80  /'JO'/
                                 templ=getlong(): if abrt then exit Select 
                                 if (flags And V_FLAG) Then 
-                                       pc+=templ: cycles-=IIf((is486),2,4)  
+                                       pc+=templ: cycles-=2  
                                 EndIf
-                                cycles-=IIf((is486),1,3) 
+                                cycles-=1 
                                 Exit Select 
                         	case &h81  /'JNO'/
                                 templ=getlong(): if abrt then exit Select 
                                 if (flags And V_FLAG)=0 Then 
-                                       pc+=templ: cycles-=IIf((is486),2,4)  
+                                       pc+=templ: cycles-=2  
                                 EndIf
-                                cycles-=IIf((is486),1,3) 
+                                cycles-=1 
                                 Exit Select 
                         	case &h82  /'JB'/
                                 templ=getlong(): if abrt then exit Select 
                                 if (flags And C_FLAG) Then 
-                                       pc+=templ: cycles-=iif((is486),2,4)  
+                                       pc+=templ: cycles-=2  
                                 EndIf
-                                cycles-=IIf((is486),1,3) 
+                                cycles-=1 
                                 Exit Select 
                         	case &h83  /'JNB'/
                                 templ=getlong(): if abrt then exit Select 
                                 if (flags And C_FLAG)=0 Then 
-                                       pc+=templ: cycles-=IIf((is486),2,4)  
+                                       pc+=templ: cycles-=2  
                                 EndIf
-                                cycles-=iif((is486),1,3) 
+                                cycles-=1 
                                 Exit Select 
                         	case &h84  /'JE'/
                                 templ=getlong(): if abrt then exit Select 
@@ -1684,16 +1678,16 @@ EndIf
                         	case &h86  /'JBE'/
                                 templ=getlong(): if abrt then exit Select 
                                 if (flags And (C_FLAG Or Z_FLAG)) Then 
-                                         pc+=templ: cycles-=IIf((is486),2,4)  
+                                         pc+=templ: cycles-=2  
                                 EndIf
-                                cycles-=IIf((is486),1,3) 
+                                cycles-=1 
                                 Exit Select 
                         	case &h87  /'JNBE'/
                                 templ=getlong(): if abrt then exit Select 
                                 if (flags And (C_FLAG Or Z_FLAG))=0 Then 
-                                         pc+=templ: cycles-=IIf((is486),2,4)  
+                                         pc+=templ: cycles-=2  
                                 EndIf
-                                cycles-=iif((is486),1,3) 
+                                cycles-=1 
                                 Exit Select 
                         	case &h88  /'JS'/
                                 templ=getlong(): if abrt then exit Select 
@@ -1720,36 +1714,36 @@ EndIf
                                 temp=iif((flags And N_FLAG),1,0 )
                                 temp2=iif((flags And V_FLAG),1,0 )
                                 if (temp<>temp2) Then 
-                                          pc+=templ: cycles-=IIf((is486),2,4)  
+                                          pc+=templ: cycles-=2  
                                 EndIf
-                                cycles-=IIf((is486),1,3) 
+                                cycles-=1 
                                 Exit Select 
                         	case &h8D  /'JNL'/
                                 templ=getlong(): if abrt then exit Select 
                                 temp=iif((flags And N_FLAG),1,0 )
                                 temp2=iif((flags And V_FLAG),1,0 )
                                 if (temp=temp2) Then 
-                                          pc+=templ: cycles-=IIf((is486),2,4)  
+                                          pc+=templ: cycles-=2  
                                 EndIf
-                                cycles-=IIf((is486),1,3) 
+                                cycles-=1 
                                 Exit Select 
                         	case &h8E  /'JLE'/
                                 templ=getlong(): if abrt then exit Select 
                                 temp=iif((flags And N_FLAG),1,0 )
                                 temp2=iif((flags And V_FLAG),1,0 )
                                 if ((flags And Z_FLAG)<>0) Or (temp<>temp2) Then 
-                                          pc+=templ: cycles-=IIf((is486),2,4)  
+                                          pc+=templ: cycles-=2  
                                 EndIf
-                                cycles-=iif((is486),1,3) 
+                                cycles-=1 
                                 Exit Select 
                         	case &h8F  /'JNLE'/
                                 templ=getlong(): if abrt then exit Select 
                                 temp =iif((flags And N_FLAG),1,0 )
                                 temp2=iif((flags And V_FLAG),1,0 )
                                 If ( ((flags And Z_FLAG)<>0) Or (temp<>temp2) )=0 Then 
-                                          pc+=templ: cycles-=IIf((is486),2,4)  
+                                          pc+=templ: cycles-=2  
                                 EndIf
-                                cycles-=IIf((is486),1,3) 
+                                cycles-=1 
                                 Exit Select 
                         	case &h90  /'SETO'/
                                 fetchea2() : if abrt then exit Select 
@@ -1861,7 +1855,7 @@ EndIf
                                         loadseg(tempw, _fs):            if abrt then exit Select 
                                         SP+=4 
                                 EndIf
-                                cycles-=iif((is486),3,7 )
+                                cycles-=3
                                 Exit Select 
                         	case &hA8  /'PUSH GS'/
                                 if ssegs Then ss0=oldss 
@@ -1885,7 +1879,7 @@ EndIf
                                         loadseg(tempw, _gs):            if abrt then exit Select 
                                         SP+=4 
                                 EndIf
-                                cycles-=iif((is486),3,7) 
+                                cycles-=3 
                                 Exit Select 
                         	case &hA3  /'BT r32'/
                                 fetchea2() : if abrt then exit Select 
@@ -1980,7 +1974,7 @@ EndIf
                                 cycles-=30 
                                 Exit Select 
                         	case &hB0  /'CMPXCHG rm8, reg8'/
-                                if is486=0 Then goto inv32 
+                                'if is486=0 Then goto inv32 
                                 fetchea2() : if abrt then exit Select 
                                 temp = geteab() 
                                 setsub8(AL, temp) 
@@ -1992,7 +1986,7 @@ EndIf
                                 cycles -= iif((modo = 3) , 6 , 10 )
                                 Exit Select 
                         	case &hB1  /'CMPXCHG rm32, reg32'/
-                                if (is486=0) Then goto inv32 
+                                'if (is486=0) Then goto inv32 
                                 fetchea2() : if abrt then exit Select 
                                 templ = geteal() 
                                 setsub32(EAX, templ) 
@@ -2113,7 +2107,7 @@ EndIf
                                         cycles-=6 
                                         Exit Select 
                                 	case Else 
-                                        if deb=3 then print #5,"Bad 32-bit 0F BA opcode ",hex(rmdat and &h38,2)
+                                        'if deb=3 then print #5,"Bad 32-bit 0F BA opcode ",hex(rmdat and &h38,2)
                                         pc=oldpc 
                                         x86illegal() 
                                         Exit Select 
@@ -2142,7 +2136,7 @@ EndIf
                                         flags = flags Or Z_FLAG 
                                 else
                                         for  tempi=0 To  31 
-                                                cycles -= iif(is486 , 1 , 3) 
+                                                cycles -=1 
                                                 if (templ And (1 Shl tempi)) Then 
                                                         flags = flags And inv(Z_FLAG) 
                                                         regs(reg).l=tempi 
@@ -2150,7 +2144,7 @@ EndIf
                                                 EndIf
                                        Next
                                 EndIf
-                                cycles-=iif((is486),6,10) 
+                                cycles-=6 
                                 Exit Select 
                         	case &hBD  /'BSR l'/
                                 fetchea2() : if abrt then exit Select 
@@ -2167,7 +2161,7 @@ EndIf
                                                 EndIf
                                        Next
                                 EndIf
-                                cycles-=iif((is486),6,10) 
+                                cycles-=6 
                                 Exit Select 
                         	case &hBE  /'MOVSX b'/
                                 fetchea2() : if abrt then exit Select 
@@ -2216,9 +2210,9 @@ EndIf
                        
                        ' GOTO (justo aqui arriba)
                        inv32: 
-                                if deb=3 then print #5,"INV32"
+                                'if deb=3 then print #5,"INV32"
                         	case Else 
-                                if deb=3 then print #5,"Bad 32-bit 0F opcode  386",temp 
+                                'if deb=3 then print #5,"Bad 32-bit 0F opcode  386",temp 
                                 pc=oldpc 
                                 x86illegal() 
                                 Exit Select 
@@ -2340,7 +2334,7 @@ EndIf
                                 loadseg(tempw, _ss): if abrt then exit Select 
                                 SP+=2 
                         EndIf
-                        cycles-=iif((is486),3,7) 
+                        cycles-=3 
                         Exit Select 
                 	case &h117, &h317  /'POP SS'/
                         if ssegs Then ss0=oldss 
@@ -2353,7 +2347,7 @@ EndIf
                                 loadseg(tempw, _ss): if abrt then exit Select 
                                 SP+=4 
                         EndIf
-                        cycles-=iif((is486),3,7) 
+                        cycles-=3 
                         Exit Select 
                 	case &h18, &h118, &h218, &h318  /'SBB 8,reg'/
                         fetchea32() : if abrt Then exit Select 
@@ -2428,19 +2422,19 @@ EndIf
                         temp=getbytef() 
                         setsbc8(AL,temp) 
                         AL-=(temp+tempc) 
-                        cycles-=iif((is486),1,2) 
+                        cycles-=1 
                         Exit Select 
                 	case &h1D, &h21D  /'SBB AX,#16'/
                         tempw=getwordf() 
                         setsbc16(AX,tempw) 
                         AX-=(tempw+tempc) 
-                        cycles-=iif((is486),1,2) 
+                        cycles-=1 
                         Exit Select 
                 	case &h11D, &h31D  /'SBB AX,#32'/
                         templ=getlong(): if abrt then exit Select 
                         setsbc32(EAX,templ) 
                         EAX-=(templ+tempc) 
-                        cycles-=iif((is486),1,2) 
+                        cycles-=1 
                         Exit Select 
                 	case &h1E, &h21E  /'PUSH DS'/
                         if ssegs Then ss0=oldss 
@@ -2475,7 +2469,7 @@ EndIf
                                 loadseg(tempw, _ds): if abrt then Exit Select 
                                 SP+=2 
                         EndIf
-                        cycles-=iif((is486),3,7) 
+                        cycles-=3 
                         Exit Select 
                 	case &h11F, &h31F  /'POP DS'/
                         if ssegs Then ss0=oldss 
@@ -2488,7 +2482,7 @@ EndIf
                                 loadseg(tempw, _ds): if abrt then exit Select 
                                 SP+=4 
                         EndIf
-                        cycles-=iif((is486),3,7)
+                        cycles-=3
                         Exit Select 
                 	case &h20, &h120, &h220, &h320  /'AND 8,reg'/
                         fetchea32() : if abrt Then exit Select 
@@ -2797,44 +2791,32 @@ EndIf
                         
                 	case &h37, &h137, &h237, &h337  /'AAA'/
                         if ((flags And A_FLAG)<>0) Or ((AL And &hF)>9) Then 
-                                AL+=6 
-                                AH+=1 
-                                flags = flags Or (A_FLAG Or C_FLAG) 
+                          AL+=6 
+                          AH+=1 
+                          flags = flags Or (A_FLAG Or C_FLAG) 
                         else
-                           flags = flags And inv(A_FLAG Or C_FLAG)
+                          flags = flags And inv(A_FLAG Or C_FLAG)
                         EndIf
                         AL = AL And &hF 
-                        cycles-=iif((is486),3,4) 
+                        cycles-=3 
                         Exit Select 
                 	case &h38, &h138, &h238, &h338  /'CMP 8,reg'/
                         fetchea32() : if abrt Then exit Select 
                         temp=geteab(): if abrt Then exit Select 
                         setsub8(temp,getr8(reg)) 
-                        if (is486) Then 
-                              cycles-=iif((modo=3),1,2) 
-                        else
-                              cycles-=iif((modo=3),2,5)
-                        EndIf
+                        cycles-=iif((modo=3),1,2) 
                         Exit Select 
                 	case &h39, &h239  /'CMP 16,reg'/
                         fetchea32() : if abrt Then exit Select 
                         tempw=geteaw(): if abrt Then exit Select 
                         setsub16(tempw,regs(reg).w) 
-                        if (is486) Then 
-                              cycles-=iif((modo=3),1,2) 
-                        else
-                              cycles-=iif((modo=3),2,5)
-                        EndIf
+                        cycles-=iif((modo=3),1,2) 
                         Exit Select 
                 	case &h139, &h339  /'CMP 32,reg'/
                         fetchea32() : if abrt Then exit Select 
                         templ=geteal(): if abrt Then exit Select 
                         setsub32(templ,regs(reg).l) 
-                        if (is486) Then 
-                              cycles-=iif((modo=3),1,2) 
-                        else
-                              cycles-=iif((modo=3),2,5)
-                        EndIf
+                        cycles-=iif((modo=3),1,2) 
                         Exit Select 
                 	case &h3A, &h13A, &h23A, &h33A  /'CMP reg,8'/
                         fetchea32() : if abrt Then exit Select 
@@ -2880,14 +2862,14 @@ EndIf
                         
                 	case &h3F, &h13F, &h23F, &h33F  /'AAS'/
                         if ((flags And A_FLAG)<>0) Or ((AL And &hF)>9) Then 
-                                AL-=6 
-                                AH-=1 
-                                flags = flags Or (A_FLAG Or C_FLAG) 
+                          AL-=6 
+                          AH-=1 
+                          flags = flags Or (A_FLAG Or C_FLAG) 
                         else
-                           flags = flags And inv(A_FLAG Or C_FLAG)
+                          flags = flags And inv(A_FLAG Or C_FLAG)
                         EndIf
                         AL = AL And &hF 
-                        cycles-=iif((is486),3,4) 
+                        cycles-=3 
                         Exit Select 
                   /'INC r16'/
                 	case &h40, &h41, &h42, &h43 , _ 
@@ -2938,7 +2920,7 @@ EndIf
                                 writememw_386(ss0,(SP-2) And &hFFFF,regs(opcode And 7).w): if abrt Then exit Select 
                                 SP-=2 
                         EndIf
-                        cycles-=iif((is486),1,2 )
+                        cycles-=1
                         Exit Select 
                   /'PUSH r32'/
                 	case &h150, &h151, &h152, &h153 , _ 
@@ -2953,7 +2935,7 @@ EndIf
                                 writememl_386(ss0,(SP-4) And &hFFFF,regs(opcode And 7).l): if abrt Then exit Select 
                                 SP-=4 
                         EndIf
-                        cycles-=iif((is486),1,2 )
+                        cycles-=1
                         Exit Select 
                    /'POP r16'/
                 	case &h58, &h59, &h5A, &h5B , _
@@ -2969,7 +2951,7 @@ EndIf
                                 tempw=readmemw_386(ss0,(SP-2) And &hFFFF): if abrt Then SP-=2: Exit Select  
                         EndIf
                         regs(opcode And 7).w=tempw 
-                        cycles-=iif((is486),1,4 )
+                        cycles-=1
                         Exit Select 
                   /'POP r32'/
                 	case &h158, &h159, &h15A, &h15B , _ 
@@ -2985,7 +2967,7 @@ EndIf
                                 templ=readmeml_386(ss0,(SP-4) And &hFFFF): if abrt Then SP-=4: Exit Select  
                         EndIf
                         regs(opcode And 7).l=templ 
-                        cycles-=iif((is486),1,4 )
+                        cycles-=1
                         Exit Select 
                 	case &h60, &h260  /'PUSHA'/
                         if stack32 Then 
@@ -3009,7 +2991,7 @@ EndIf
                                 writememw_386(ss0,((SP-16) And &hFFFF),DI) 
                                 if abrt=0 Then SP-=16 
                         EndIf
-                        cycles-=iif((is486),11,18 )
+                        cycles-=11
                         Exit Select 
                 	case &h61, &h261  /'POPA'/
                         if stack32 Then 
@@ -3031,7 +3013,7 @@ EndIf
                                 AX=readmemw_386(ss0,((SP+14) And &hFFFF)): if abrt Then exit Select 
                                 SP+=16 
                         EndIf
-                        cycles-=iif((is486),9,24 )
+                        cycles-=9
                         Exit Select 
                 	case &h160, &h360  /'PUSHA'/
                         if stack32 Then 
@@ -3055,7 +3037,7 @@ EndIf
                                 writememl_386(ss0,((SP-32) And &hFFFF),EDI) 
                                 if abrt=0 Then SP-=32 
                         EndIf
-                        cycles-=iif((is486),11,18 )
+                        cycles-=11
                         Exit Select 
                 	case &h161, &h361  /'POPA'/
                         if stack32 Then 
@@ -3077,7 +3059,7 @@ EndIf
                                 EAX=readmeml_386(ss0,((SP+28) And &hFFFF)): if abrt Then exit Select 
                                 SP+=32 
                         EndIf
-                        cycles-=iif((is486),9,24 )
+                        cycles-=9
                         Exit Select 
                 	case &h62, &h262  /'BOUND'/
                         fetchea32() : if abrt Then exit Select 
@@ -3086,7 +3068,7 @@ EndIf
                         If (cshort(regs(reg).w)<cshort(tempw))  Or  (cshort(regs(reg).w)>CShort(tempw2)) Then 
                                 x86_int(5) 
                         EndIf
-                        cycles-=iif((is486),7,10 )
+                        cycles-=7
                         Exit Select 
                 	case &h162, &h362  /'BOUND'/
                         fetchea32() : if abrt Then exit Select 
@@ -3095,7 +3077,7 @@ EndIf
                         if (clng(regs(reg).l)<clng(templ))  Or  (clng(regs(reg).l)>CLng(templ2)) Then 
                                 x86_int(5) 
                         EndIf
-                        cycles-=iif((is486),7,10 )
+                        cycles-=7
                         Exit Select 
                 	case &h63, &h163, &h263, &h363  /'ARPL'/
                         if NOTRM() then exit select
@@ -3108,7 +3090,7 @@ EndIf
                         else
                            flags = flags And inv(Z_FLAG)
                         EndIf
-                        cycles-=iif((is486),9,20 )
+                        cycles-=9
                         Exit Select 
                 	case &h64, &h164, &h264, &h364  /'FS:'/
                         oldss=ss0 
@@ -3191,7 +3173,7 @@ EndIf
                 	case &h6A, &h26A /'PUSH #eb'/
                         tempw=readmemb_386(cs0,pc): pc+=1 
                         if (tempw And &h80) Then tempw = tempw Or &hFF00 
-                        'if (deb=3) Then print #5,"PUSH 1:",tempw,stack32 
+                        ''if (deb=3) Then print #5,"PUSH 1:",tempw,stack32 
                         if stack32 Then 
                                 writememw_386(ss0,ESP-2,tempw): if abrt Then exit Select 
                                 ESP-=2 
@@ -3204,7 +3186,7 @@ EndIf
                 	case &h16A, &h36A /'PUSH #eb'/
                         templ=readmemb_386(cs0,pc): pc+=1 
                         if (templ And &h80) Then templ = templ Or &hFFFFFF00 
-                        'if (deb=3) Then print #5,"PUSH 2:",templ,stack32
+                        ''if (deb=3) Then print #5,"PUSH 2:",templ,stack32
                         if stack32 Then 
                                 writememl_386(ss0,ESP-4,templ): if abrt Then exit Select 
                                 ESP-=4 
@@ -3556,11 +3538,7 @@ EndIf
                                 Exit Select 
                         	case &h38  /'CMP b,#8'/
                                 setsub8(temp,temp2) 
-                                if (is486) Then 
-                                        cycles-=iif((modo=3),1,2) 
-                                else
-                                        cycles-=iif((modo=3),2,7)
-                                EndIf
+                                cycles-=iif((modo=3),1,2) 
                                 Exit Select 
                         End Select
                        Exit Select 
@@ -3609,11 +3587,7 @@ EndIf
                                 Exit Select 
                         	case &h38  /'CMP w,#16'/
                                 setsub16(tempw,tempw2) 
-                                if (is486) Then 
-                                        cycles-=iif((modo=3),1,2) 
-                                else
-                                        cycles-=iif((modo=3),2,7)
-                                EndIf
+                                cycles-=iif((modo=3),1,2) 
                                 Exit Select 
                        End Select
                        Exit Select 
@@ -3662,11 +3636,7 @@ EndIf
                                 Exit Select 
                         	case &h38  /'CMP l,#32'/
                                 setsub32(templ,templ2) 
-                                if (is486) Then 
-                                        cycles-=iif((modo=3),1,2) 
-                                else
-                                        cycles-=iif((modo=3),2,7)
-                                EndIf
+                                cycles-=iif((modo=3),1,2) 
                                 Exit Select 
                        End Select
                        Exit Select 
@@ -3716,11 +3686,7 @@ EndIf
                                 Exit Select 
                         	case &h38  /'CMP w,#8'/
                                 setsub16(tempw,tempw2) 
-                                if (is486) Then 
-                                        cycles-=iif((modo=3),1,2) 
-                                else
-                                        cycles-=iif((modo=3),2,7)
-                                EndIf
+                                cycles-=iif((modo=3),1,2) 
                                 Exit Select 
                        End Select
                        Exit Select 
@@ -3771,11 +3737,7 @@ EndIf
                                 Exit Select 
                         	case &h38  /'CMP l,#32'/
                                 setsub32(templ,templ2) 
-                                if (is486) Then 
-                                        cycles-=iif((modo=3),1,2) 
-                                else
-                                        cycles-=iif((modo=3),2,7)
-                                EndIf
+                                cycles-=iif((modo=3),1,2) 
                                 Exit Select 
                        End Select
                        Exit Select 
@@ -3784,33 +3746,21 @@ EndIf
                         temp=geteab(): if abrt Then exit Select 
                         temp2=getr8(reg) 
                         setznp8(temp And temp2) 
-                        if (is486) Then 
-                             cycles-=iif((modo=3),1,2) 
-                        else
-                             cycles-=iif((modo=3),2,5)
-                        EndIf
+                        cycles-=iif((modo=3),1,2) 
                         Exit Select 
                 	case &h85, &h285  /'TEST w,reg'/
                         fetchea32() : if abrt Then exit Select 
                         tempw=geteaw(): if abrt Then exit Select 
                         tempw2=regs(reg).w 
                         setznp16(tempw And tempw2) 
-                        if (is486) Then 
-                              cycles-=iif((modo=3),1,2) 
-                        else
-                              cycles-=iif((modo=3),2,5)
-                        EndIf
+                        cycles-=iif((modo=3),1,2) 
                         Exit Select 
                 	case &h185, &h385  /'TEST l,reg'/
                         fetchea32() : if abrt Then exit Select 
                         templ=geteal(): if abrt Then exit Select 
                         templ2=regs(reg).l 
                         setznp32(templ And templ2) 
-                        if (is486) Then 
-                              cycles-=iif((modo=3),1,2) 
-                        else
-                              cycles-=iif((modo=3),2,5)
-                        EndIf
+                        cycles-=iif((modo=3),1,2) 
                         Exit Select 
                 	case &h86, &h186, &h286, &h386  /'XCHG b,reg'/
                         fetchea32() : if abrt Then exit Select 
@@ -3836,47 +3786,35 @@ EndIf
                 	case &h88, &h188, &h288, &h388  /'MOV b,reg'/
                         fetchea32() : if abrt Then exit Select 
                         seteab(getr8(reg)) 
-                        cycles-=iif((is486),1,2) 
+                        cycles-=1 
                         Exit Select 
                 	case &h89, &h289  /'MOV w,reg'/
                         fetchea32() : if abrt Then exit Select 
                         seteaw(regs(reg).w) 
-                        cycles-=iif((is486),1,2) 
+                        cycles-=1 
                         Exit Select 
                 	case &h189, &h389  /'MOV l,reg'/
                         fetchea32() : if abrt Then exit Select 
                         seteal(regs(reg).l) 
-                        cycles-=iif((is486),1,2) 
+                        cycles-=1 
                         Exit Select 
                 	case &h8A, &h18A, &h28A, &h38A  /'MOV reg,b'/
                         fetchea32() : if abrt Then exit Select 
                         temp=geteab(): if abrt then Exit Select 
                         setr8(reg,temp) 
-                        if (is486) Then 
-                              cycles-=1 
-                        else
-                              cycles-=iif((modo=3),2,4)
-                        EndIf
+                        cycles-=1 
                         Exit Select 
                 	case &h8B, &h28B  /'MOV reg,w'/
                         fetchea32() : if abrt Then exit Select 
                         tempw=geteaw(): if abrt Then exit Select 
                         regs(reg).w=tempw 
-                        if (is486) Then 
-                              cycles-=1 
-                        else
-                              cycles-=iif((modo=3),2,4)
-                        EndIf
+                        cycles-=1 
                         Exit Select 
                 	case &h18B, &h38B  /'MOV reg,l'/
                         fetchea32() : if abrt Then exit Select 
                         templ=geteal(): if abrt Then exit Select 
                         regs(reg).l=templ 
-                        if (is486) Then 
-                             cycles-=1 
-                        else
-                             cycles-=iif((modo=3),2,4)
-                        EndIf
+                        cycles-=1 
                         Exit Select 
                 	case &h8C, &h28C  /'MOV w,sreg'/
                         fetchea32() : if abrt Then exit Select 
@@ -4027,11 +3965,7 @@ EndIf
                                   SP-=2 
                                 EndIf
                         EndIf
-                        if (is486) Then 
-                             cycles-=iif((modo=3),1,6) 
-                        else
-                             cycles-=iif((modo=3),4,5)
-                        EndIf
+                        cycles-=iif((modo=3),1,6) 
                         Exit Select 
                 	case &h18F, &h38F  /'POPL'/
                         if ssegs Then 
@@ -4056,14 +3990,10 @@ EndIf
                                 	SP-=4 
                               EndIf
                         EndIf
-                        if (is486) Then 
-                                cycles-=iif((modo=3),1,6) 
-                        else
-                                cycles-=iif((modo=3),4,5)
-                        EndIf
+                        cycles-=iif((modo=3),1,6) 
                         Exit Select 
                 	case &h90, &h190, &h290, &h390  /'NOP'/
-                        cycles-=iif((is486),1,3) 
+                        cycles-=1 
                         Exit Select 
                   /'XCHG AX'/
                 	case &h91, &h92, &h93  , _
@@ -4109,22 +4039,22 @@ EndIf
                 	case &h9A, &h29A  /'CALL FAR'/
                         tempw=getword() 
                         tempw2=getword(): if abrt Then exit Select 
-                        'if (deb = 3) Then print #5,"Call far A ",Hex(tempw2,8),Hex(tempw ,8)
+                        ''if (deb = 3) Then print #5,"Call far A ",Hex(tempw2,8),Hex(tempw ,8)
                         tempw3=CS1 
                         templ2 = pc 
-                        'if (deb=3) Then print #5,"Call far B ",Hex(templ2 ,8)
+                        ''if (deb=3) Then print #5,"Call far B ",Hex(templ2 ,8)
                         if ssegs Then ss0=oldss 
                         oxpc=pc 
                         pc=tempw 
                         optype=CALL0 
                         cgate32=0 
-                        'if (deb = 3) Then print #5,"Load CS..."; 
+                        ''if (deb = 3) Then print #5,"Load CS..."; 
                         if modoprotegido Then 
                                loadcscall(tempw2) 
                         else
                                loadcs(tempw2)
                         EndIf
-                        'if (deb = 3) Then print #5,"...abrt,cgate32;"; abrt, cgate32
+                        ''if (deb = 3) Then print #5,"...abrt,cgate32;"; abrt, cgate32
                         optype=0 
                         if abrt Then exit Select 
                         oldss=ss0 
@@ -4139,12 +4069,12 @@ EndIf
                                 ESP-=4 
                         Else
                                 writememw_386(ss0,(SP-2) And &hFFFF,tempw3) 
-                                'if (deb=3) Then print #5,"Write CS to ";Hex(SS1,8),Hex(SP-2,8) 
+                                ''if (deb=3) Then print #5,"Write CS to ";Hex(SS1,8),Hex(SP-2,8) 
                                 writememw_386(ss0,(SP-4) And &hFFFF,templ2): if abrt Then exit Select 
-                                'if (deb=3) Then print #5,"Write PC16 to ";Hex(templ2,8), Hex(SS1,8),Hex(SP-4,8)                     
+                                ''if (deb=3) Then print #5,"Write PC16 to ";Hex(templ2,8), Hex(SS1,8),Hex(SP-4,8)                     
                                 SP-=4 
                         EndIf
-                        cycles-=iif((is486),18,17) 
+                        cycles-=18
                         Exit Select 
             ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''' 
                 	case &h19A, &h39A  /'CALL FAR'/
@@ -4173,15 +4103,15 @@ EndIf
                         if stack32 Then 
                                 writememl_386(ss0,ESP-4,tempw3) 
                                 writememl_386(ss0,ESP-8,templ2): if abrt then exit Select 
-                                if (deb=3) Then print #5,"Write PC32 to ", templ2, SS1,ESP-8 
+                                'if (deb=3) Then print #5,"Write PC32 to ", templ2, SS1,ESP-8 
                                 ESP-=8 
                         else
                                 writememl_386(ss0,(SP-4) And &hFFFF,tempw3) 
                                 writememl_386(ss0,(SP-8) And &hFFFF,templ2): if abrt Then exit Select 
-                                if (deb=3) Then print #5,"Write PC32 to ", templ2, SS1,SP-8 
+                                'if (deb=3) Then print #5,"Write PC32 to ", templ2, SS1,SP-8 
                                 SP-=8 
                         EndIf
-                        cycles-=iif((is486),18,17) 
+                        cycles-=18
                         Exit Select 
         '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''                
                         
@@ -4264,7 +4194,7 @@ EndIf
                                 ESP+=4 
                         else
                                 tempw=readmemw_386(ss0,SP) 
-                                tempw2=readmemw_386(ss0,SP+2):               if abrt then exit Select 
+                                tempw2=readmemw_386(ss0,SP+2): if abrt then exit Select 
                                 SP+=4 
                         EndIf
                         
@@ -4276,14 +4206,12 @@ EndIf
                            flags=(flags And &hF200) Or (tempw And &h0DD5) Or 2
                         EndIf
                         
-                        tempw2 = tempw2 And iif((is486),&h24,0 )
+                        tempw2 = tempw2 And &h24
                         tempw2 = tempw2 Or (eflags And 3) 
                         if (CPUID) Then 
                            eflags=tempw2 And &h27 
-                        ElseIf (is486) Then 
+                        Else
                         	eflags=tempw2 And 7
-                        else
-                           eflags=tempw2 And 3
                         EndIf
                         cycles-=5 
                         Exit Select 
@@ -4299,67 +4227,67 @@ EndIf
                         addr=getword(): if abrt then exit Select 
                         temp=readmemb_386(ds0,addr): if abrt Then exit Select 
                         AL=temp 
-                        cycles-=iif((is486),1,4 )
+                        cycles-=1
                         Exit Select 
                 	case &h2A0, &h3A0  /'MOV AL,(l)'/
                         addr=getlong(): if abrt then exit Select 
                         temp=readmemb_386(ds0,addr): if abrt Then exit Select 
                         AL=temp 
-                        cycles-=iif((is486),1,4 )
+                        cycles-=1
                         Exit Select 
                 	case &hA1  /'MOV AX,(w)'/
                         addr=getword(): if abrt then exit Select 
                         tempw=readmemw_386(ds0,addr): if abrt Then exit Select 
                         AX=tempw 
-                        cycles-=iif((is486),1,4 )
+                        cycles-=1
                         Exit Select 
                 	case &h1A1  /'MOV EAX,(w)'/
                         addr=getword(): if abrt then exit Select 
                         templ=readmeml_386(ds0,addr): if abrt Then exit Select 
                         EAX=templ 
-                        cycles-=iif((is486),1,4 )
+                        cycles-=1
                         Exit Select 
                 	case &h2A1  /'MOV AX,(l)'/
                         addr=getlong(): if abrt then exit Select 
                         tempw=readmemw_386(ds0,addr): if abrt Then exit Select 
                         AX=tempw 
-                        cycles-=iif((is486),1,4 )
+                        cycles-=1
                         Exit Select 
                 	case &h3A1  /'MOV EAX,(l)'/
                         addr=getlong(): if abrt then exit Select 
                         templ=readmeml_386(ds0,addr): if abrt Then exit Select 
                         EAX=templ 
-                        cycles-=iif((is486),1,4 )
+                        cycles-=1
                         Exit Select 
                 	case &hA2, &h1A2  /'MOV (w),AL'/
                         addr=getword(): if abrt then exit Select 
                         writememb_386(ds0,addr,AL) 
-                        cycles-=iif((is486),1,2 )
+                        cycles-=1
                         Exit Select 
                 	case &h2A2, &h3A2  /'MOV (l),AL'/
                         addr=getlong(): if abrt then exit Select 
                         writememb_386(ds0,addr,AL) 
-                        cycles-=iif((is486),1,2 )
+                        cycles-=1
                         Exit Select 
                 	case &hA3  /'MOV (w),AX'/
                         addr=getword(): if abrt then exit Select 
                         writememw_386(ds0,addr,AX) 
-                        cycles-=iif((is486),1,2 )
+                        cycles-=1
                         Exit Select 
                 	case &h1A3  /'MOV (w),EAX'/
                         addr=getword(): if abrt then exit Select 
                         writememl_386(ds0,addr,EAX) 
-                        cycles-=iif((is486),1,2 )
+                        cycles-=1
                         Exit Select 
                 	case &h2A3  /'MOV (l),AX'/
                         addr=getlong(): if abrt then exit Select 
                         writememw_386(ds0,addr,AX) 
-                        cycles-=iif((is486),1,2 )
+                        cycles-=1
                         Exit Select 
                 	case &h3A3  /'MOV (l),EAX'/
                         addr=getlong(): if abrt then exit Select 
                         writememl_386(ds0,addr,EAX) 
-                        cycles-=iif((is486),1,2 )
+                        cycles-=1
                         Exit Select 
                 	case &hA4, &h1A4  /'MOVSB'/
                         temp=readmemb_386(ds0,SI):  if abrt then exit Select 
@@ -4431,7 +4359,7 @@ EndIf
                         else
                                  DI+=1: SI+=1  
                         EndIf
-                        cycles-=iif((is486),8,10 )
+                        cycles-=8
                         Exit Select 
                 	case &h2A6, &h3A6  /'CMPSB'/
                         temp =readmemb_386(ds0,ESI) 
@@ -4443,7 +4371,7 @@ EndIf
                         else
                                  EDI+=1: ESI+=1  
                         EndIf
-                        cycles-=iif((is486),8,10 )
+                        cycles-=8
                         Exit Select 
                 	case &hA7  /'CMPSW'/
                         tempw =readmemw_386(ds0,SI) 
@@ -4455,7 +4383,7 @@ EndIf
                         else
                                  DI+=2: SI+=2  
                         EndIf
-                        cycles-=iif((is486),8,10 )
+                        cycles-=8
                         Exit Select 
                 	case &h1A7  /'CMPSL'/
                         templ =readmeml_386(ds0,SI) 
@@ -4467,7 +4395,7 @@ EndIf
                         else
                                  DI+=4: SI+=4  
                         EndIf
-                        cycles-=iif((is486),8,10 )
+                        cycles-=8
                         Exit Select 
                 	case &h2A7  /'CMPSW'/
                         tempw =readmemw_386(ds0,ESI) 
@@ -4479,7 +4407,7 @@ EndIf
                         else
                                  EDI+=2: ESI+=2  
                         EndIf
-                        cycles-=iif((is486),8,10 )
+                        cycles-=8
                         Exit Select 
                 	case &h3A7  /'CMPSL'/
                         templ =readmeml_386(ds0,ESI) 
@@ -4491,7 +4419,7 @@ EndIf
                         else
                                  EDI+=4: ESI+=4  
                         EndIf
-                        cycles-=iif((is486),8,10 )
+                        cycles-=8
                         Exit Select 
                 	case &hA8, &h1A8, &h2A8, &h3A8  /'TEST AL,#8'/
                         temp=getbytef() 
@@ -4788,7 +4716,7 @@ EndIf
                                         temp2=temp And &h80 
                                         temp=(temp Shl 1) Or tempc 
                                         c-=1 
-                                        if (is486) Then cycles-=1 
+                                        cycles-=1 
                                 Wend
                                 seteab(temp): if abrt Then exit Select 
                                 flags = flags And inv(C_FLAG Or V_FLAG) 
@@ -4803,7 +4731,7 @@ EndIf
                                         temp2=temp And 1 
                                         temp=(temp Shr 1) Or tempc 
                                         c-=1 
-                                        if (is486) Then cycles-=1 
+                                        cycles-=1 
                                 Wend
                                 seteab(temp): if abrt Then exit Select 
                                 flags = flags And inv(C_FLAG Or V_FLAG) 
@@ -4878,7 +4806,7 @@ EndIf
                                         temp2=(tempw Shr 15) 
                                         tempw=(tempw Shl 1) Or tempc 
                                         c-=1 
-                                        if (is486) Then cycles-=1 
+                                        cycles-=1 
                                 Wend
                                 seteaw(tempw):  if abrt then exit Select 
                                 flags = flags And inv(C_FLAG Or V_FLAG) 
@@ -4893,7 +4821,7 @@ EndIf
                                         temp2=tempw And 1 
                                         tempw=(tempw Shr 1) Or tempc 
                                         c-=1 
-                                        if (is486) Then cycles-=1 
+                                        cycles-=1 
                                 Wend
                                 seteaw(tempw):  if abrt then exit Select 
                                 flags = flags And inv(C_FLAG Or V_FLAG) 
@@ -4969,7 +4897,7 @@ EndIf
                                         temp2=templ Shr 31 
                                         templ=(templ Shl 1) Or tempc 
                                         c-=1 
-                                        if (is486) Then cycles-=1 
+                                        cycles-=1 
                                 Wend
                                 seteal(templ):  if abrt then exit Select 
                                 flags = flags And inv(C_FLAG Or V_FLAG) 
@@ -4984,7 +4912,7 @@ EndIf
                                         temp2=templ And 1 
                                         templ=(templ Shr 1) Or tempc 
                                         c-=1 
-                                        if (is486) Then cycles-=1 
+                                        cycles-=1 
                                 Wend
                                 seteal(templ):  if abrt then exit Select 
                                 flags = flags And inv(C_FLAG Or V_FLAG) 
@@ -5037,7 +4965,7 @@ EndIf
                                 SP+=2+tempw 
                         EndIf
                         pc=tempw2 
-                        cycles-=iif((is486),5,10 ) 
+                        cycles-=5 
                         Exit Select 
                 	case &h1C2, &h3C2  /'RET'/
                         tempw=getword() 
@@ -5050,7 +4978,7 @@ EndIf
                                 SP+=4+tempw 
                         EndIf
                         pc=templ 
-                        cycles-=iif((is486),5,10 )
+                        cycles-=5
                         Exit Select 
                 	case &hC3, &h2C3  /'RET'/
                         if ssegs Then ss0=oldss 
@@ -5062,7 +4990,7 @@ EndIf
                                 SP+=2 
                         EndIf
                         pc=tempw 
-                        cycles-=iif((is486),5,10 )
+                        cycles-=5
                         Exit Select 
                 	case &h1C3, &h3C3  /'RET'/
                         if ssegs Then ss0=oldss 
@@ -5074,7 +5002,7 @@ EndIf
                                 SP+=4 
                         EndIf
                         pc=templ 
-                        cycles-=iif((is486),5,10 )
+                        cycles-=5
                         Exit Select 
                 	case &hC4, &h2C4  /'LES'/
                         fetchea32() : if abrt Then exit Select 
@@ -5153,7 +5081,8 @@ EndIf
                         if (tempi<>0) Then 
                         	temp-=1
                         	Print #5,"OJO con --TEMPI-1, revisar por que no se si resta antes o despues"
-                                while (tempi) ' OJO, original es --TEMPI, o sea, resta antes de entrar?????
+                        	' segun mi investigacion (con unas pruebas en C), se resta antes de entrar y se sale antes de llegar al "0"
+                                while (tempi>0) ' OJO, original es --TEMPI, o sea, resta antes de entrar?????
                                 			 temp-=1
                                         EBP-=2 
                                         if stack32 Then 
@@ -5174,7 +5103,7 @@ EndIf
                                              ESP=templ2: EBP=templ
                                              Exit Select 
                                         EndIf
-                                        cycles-=iif((is486),3,4 )
+                                        cycles-=3
                                        'tempi-=1
                                 Wend
                                 if stack32 Then 
@@ -5186,7 +5115,7 @@ EndIf
                                      ESP=templ2: EBP=templ
                                      Exit Select 
                                 EndIf
-                                cycles-=iif((is486),3,5) 
+                                cycles-=3 
                         EndIf
                         BP = templ2 
                         if stack32 Then 
@@ -5194,7 +5123,7 @@ EndIf
                         else
                              SP-=tempw2
                         EndIf
-                        cycles-=iif((is486),14,10 )
+                        cycles-=14
                         Exit Select 
                 	case &h1C8, &h3C8  /'ENTER'/
                         tempw=getword() 
@@ -5213,7 +5142,8 @@ EndIf
                         if (tempi<>0) Then 
                         	temp-=1
                         	    Print #5,"OJO con --TEMPI-2, revisar por que no se si resta antes o despues"
-                                while (tempi) ' OJO, original es --TEMPI, o sea, resta antes de entrar?????
+                        	    ' segun mi investigacion (con unas pruebas en C), se resta antes de entrar y se sale antes de llegar al "0"
+                                while (tempi>0) ' OJO, original es --TEMPI, o sea, resta antes de entrar?????
                                 			 tempi-=1
                                         EBP-=4 
                                         if stack32 Then 
@@ -5234,7 +5164,7 @@ EndIf
                                                  ESP=templ2: EBP=templ3
                                                  Exit Select 
                                         EndIf
-                                        cycles-=iif((is486),3,4 )
+                                        cycles-=3
                                         'tempi-=1
                                 Wend
                                 if stack32 Then 
@@ -5246,7 +5176,7 @@ EndIf
                                          ESP=templ2: EBP=templ3
                                          Exit Select  
                                 EndIf
-                                cycles-=iif((is486),3,5 )
+                                cycles-=3
                         EndIf
                         EBP=templ2 
                         if stack32 Then 
@@ -5254,7 +5184,7 @@ EndIf
                         else
                               SP-=tempw
                         EndIf
-                        cycles-=iif((is486),14,10 )
+                        cycles-=14
                         Exit Select 
                 	case &hC9, &h2C9  /'LEAVE'/
                         templ=ESP 
@@ -5308,7 +5238,7 @@ EndIf
                         else
                                SP+=4+tempw
                         EndIf
-                        cycles-=iif((is486),13,18 )
+                        cycles-=13
                         Exit Select 
                 	case &h1CA, &h3CA  /'RETF'/
                         tempw=getword() 
@@ -5332,7 +5262,7 @@ EndIf
                         else
                                SP+=8+tempw
                         EndIf
-                        cycles-=iif((is486),13,18 )
+                        cycles-=13
                         Exit Select 
                 	case &hCB, &h2CB  /'RETF'/
                         if (modoprotegido=1) And ((eflags And VM_FLAG)=0) Then 
@@ -5355,7 +5285,7 @@ EndIf
                         else
                                SP+=4
                         EndIf
-                        cycles-=iif((is486),13,18 )
+                        cycles-=13
                         Exit Select 
                 	case &h1CB, &h3CB  /'RETF'/
                         if (modoprotegido=1) And ((eflags And VM_FLAG)=0) Then 
@@ -5389,12 +5319,12 @@ EndIf
                                         ESP=templ 
                                 EndIf
                         EndIf
-                        cycles-=iif((is486),13,18 )
+                        cycles-=13
                         Exit Select 
                 	case &hCC, &h1CC, &h2CC, &h3CC  /'INT 3'/
                         if modoprotegido Then 
                                 pmodeint(3,1) 
-                                cycles-=iif((is486),44,59) 
+                                cycles-=44 
                         else
                                 if ssegs Then ss0=oldss 
                                 if stack32 Then 
@@ -5413,7 +5343,7 @@ EndIf
                                 oxpc=pc 
                                 pc=readmemw_386(0,addr) 
                                 loadcs(readmemw_386(0,addr+2)) 
-                                cycles-=iif((is486),26,33 )
+                                cycles-=26
                         EndIf
                         cycles-=23 
                         Exit Select 
@@ -5432,7 +5362,7 @@ EndIf
                    intrt: 
                        if modoprotegido Then 
                                pmodeint(temp,1) 
-                               cycles-=iif((is486),44,59 )
+                               cycles-=44
                        Else
                                if ssegs Then ss0=oldss 
                                if stack32 Then 
@@ -5451,7 +5381,7 @@ EndIf
                                oxpc=pc 
                                pc=readmemw_386(0,addr) 
                                loadcs(readmemw_386(0,addr+2)) 
-                               cycles-=iif((is486),30,37 )
+                               cycles-=30
                        EndIf
                        Exit Select 
                         
@@ -5496,7 +5426,7 @@ EndIf
                                         SP+=6 
                                 EndIf
                         EndIf
-                        cycles-=iif((is486),15,22) 
+                        cycles-=15 
                         Exit Select 
                 	case &h1CF, &h3CF  /'IRETD'/
                         if ((cr0 And 1)<>0) And ((eflags And VM_FLAG)<>0) And (IOPL <> 3) Then 
@@ -5531,7 +5461,7 @@ EndIf
                                 EndIf
                                 loadcs(templ) 
                         EndIf
-                        cycles-=iif((is486),15,22) 
+                        cycles-=15 
                         Exit Select 
                         
                         
@@ -5719,7 +5649,7 @@ EndIf
                                 cycles-=iif((modo=3),3,7) 
                                 Exit Select 
                         	Case else 
-                                if deb=3 then print #5,"Bad D1 opcode ",hex(rmdat and &h38,2)
+                                'if deb=3 then print #5,"Bad D1 opcode ",hex(rmdat and &h38,2)
                        End Select
                        Exit Select 
                 	case &h1D1, &h3D1 
@@ -5814,7 +5744,7 @@ EndIf
                                 cycles-=iif((modo=3),3,7) 
                                 Exit Select 
                         	case Else 
-                                if deb=3 then print #5,"Bad D1 opcode ",hex(rmdat and &h38,2) 
+                                'if deb=3 then print #5,"Bad D1 opcode ",hex(rmdat and &h38,2) 
                        End Select
                        Exit Select 
                 	case &hD2, &h1D2, &h2D2, &h3D2 
@@ -6091,7 +6021,7 @@ EndIf
                         AH=(AL \ tempws) 
                         AL = AL Mod tempws 
                         setznp16(AX) 
-                        cycles-=iif((is486),15,17 )
+                        cycles-=15
                         Exit Select 
                 	case &hD5, &h1D5, &h2D5, &h3D5  /'AAD'/
                         tempws=readmemb_386(cs0,pc): pc+=1 
@@ -6100,7 +6030,7 @@ EndIf
                         AL=(AH*tempws)+AL 
                         AH=0 
                         setznp16(AX) 
-                        cycles-=iif((is486),14,19 )
+                        cycles-=14
                         Exit Select 
                         
                         
@@ -6180,7 +6110,7 @@ EndIf
                         if (CX<>0) And ((flags And Z_FLAG)=0) Then 
                                  pc+=offset  
                         EndIf
-                        cycles-=iif((is486),7,11 )
+                        cycles-=7
                         Exit Select 
                 	case &h2E0, &h3E0  /'LOOPNE'/
                         offset=cbyte(readmemb_386(cs0,pc)): pc+=1 
@@ -6188,7 +6118,7 @@ EndIf
                         if (ECX<>0) And ((flags And Z_FLAG)=0) Then 
                                  pc+=offset  
                         EndIf
-                        cycles-=iif((is486),7,11 )
+                        cycles-=7
                         Exit Select 
                 	case &hE1, &h1E1  /'LOOPE'/
                         offset=cbyte(readmemb_386(cs0,pc)): pc+=1 
@@ -6196,7 +6126,7 @@ EndIf
                         if (CX<>0) And ((flags And Z_FLAG)<>0) Then 
                                  pc+=offset  
                         EndIf
-                        cycles-=iif((is486),7,11 )
+                        cycles-=7
                         Exit Select 
                 	case &h2E1, &h3E1  /'LOOPE'/
                         offset=cbyte(readmemb_386(cs0,pc)): pc+=1 
@@ -6204,7 +6134,7 @@ EndIf
                         if (ECX<>0) And ((flags And Z_FLAG)<>0) Then 
                                  pc+=offset  
                         EndIf
-                        cycles-=iif((is486),7,11 )
+                        cycles-=7
                         Exit Select 
                 	case &hE2, &h1E2  /'LOOP'/
                         offset=cbyte(readmemb_386(cs0,pc)): pc+=1 
@@ -6212,7 +6142,7 @@ EndIf
                         if (CX<>0) Then
                                  pc+=offset
                         EndIf
-                        cycles-=iif((is486),7,11 )
+                        cycles-=7
                         Exit Select 
                 	case &h2E2, &h3E2  /'LOOP'/
                         offset=cbyte(readmemb_386(cs0,pc)): pc+=1 
@@ -6220,7 +6150,7 @@ EndIf
                         if (ECX<>0) Then 
                                  pc+=offset  
                         EndIf
-                        cycles-=iif((is486),7,11 )
+                        cycles-=7
                         Exit Select 
                 	case &hE3, &h1E3  /'JCXZ'/
                         offset=cbyte(readmemb_386(cs0,pc)): pc+=1 
@@ -6307,7 +6237,7 @@ EndIf
                                 SP-=2 
                         EndIf
                         pc+=cshort(tempw) 
-                        cycles-=iif((is486),3,7 )
+                        cycles-=3
                         Exit Select 
                 	case &h3E8  /'CALL rel 16'/
                         templ=getlong(): if abrt then exit Select 
@@ -6320,26 +6250,26 @@ EndIf
                                 SP-=4 
                         EndIf
                         pc+=templ 
-                        cycles-=iif((is486),3,7 )
+                        cycles-=3
                         Exit Select 
                 	case &hE9, &h2E9  /'JMP rel 16'/
                         tempw=getword(): if abrt then exit Select 
                         pc+=cshort(tempw) 
-                        cycles-=iif((is486),3,7) 
+                        cycles-=3 
                         Exit Select 
                 	case &h1E9, &h3E9  /'JMP rel 32'/
                         templ=getlong(): if abrt then exit Select 
                         pc+=templ 
-                        cycles-=iif((is486),3,7 )
+                        cycles-=3
                         Exit Select 
                 	case &hEA, &h2EA  /'JMP far'/
                         addr=getword()
-                        'If (deb=3) Then print #5,"JMP ABRT"
+                        ''if (deb=3) Then print #5,"JMP ABRT"
                         tempw=getword(): if abrt Then exit Select 
                         oxpc=pc 
                         pc=addr 
                         loadcsjmp(tempw,oxpc) 
-                        cycles-=iif((is486),17,12 )
+                        cycles-=17
                         Exit Select 
                 	case &h1EA, &h3EA  /'JMP far'/
                         templ=getlong() 
@@ -6347,12 +6277,12 @@ EndIf
                         oxpc=pc 
                         pc=templ
                         loadcsjmp(tempw,oxpc) 
-                        cycles-=iif((is486),17,12 )
+                        cycles-=17
                         Exit Select 
                 	case &hEB, &h1EB, &h2EB, &h3EB  /'JMP rel'/
                         offset=cbyte(readmemb_386(cs0,pc)): pc+=1 
                         pc+=offset 
-                        cycles-=iif((is486),3,7 )
+                        cycles-=3
                         Exit Select 
                         
                         
@@ -6445,11 +6375,7 @@ EndIf
                                 temp2=readmemb_386(cs0,pc): pc+=1: if abrt then exit Select 
                                 temp = temp And temp2 
                                 setznp8(temp) 
-                                if (is486) Then 
-                                        cycles-=iif((modo=3),1,2) 
-                                else
-                                        cycles-=iif((modo=3),2,5)
-                                EndIf
+                                cycles-=iif((modo=3),1,2) 
                                 Exit Select 
                         	case &h10  /'NOT b'/
                                 seteab(not(temp)) ' NOT=invertir bits 
@@ -6506,7 +6432,7 @@ EndIf
                                                 loadcs(readmemw_386(0,2)) 
                                         EndIf
                                 EndIf
-                                cycles-=iif((is486),16,14) 
+                                cycles-=16 
                                 Exit Select 
                         	case &h38  /'IDIV AL,b'/
                                 tempws=Clng(CShort(AX)) 
@@ -6520,7 +6446,7 @@ EndIf
                                         	flags = flags Or &h8D5: /'NO es Cyrix'/
                                         'EndIf
                                 else
-                                        if deb=3 then print #5,"IDIVb exception ",tempws,temp,tempws2 
+                                        'if deb=3 then print #5,"IDIVb exception ",tempws,temp,tempws2 
                                         pc=oldpc 
                                         if modoprotegido Then 
                                                 pmodeint(0,0) 
@@ -6538,7 +6464,7 @@ EndIf
                                 cycles-=19 
                                 Exit Select 
                         	case Else 
-                                if deb=3 then print #5,"Bad F6 opcode ",hex(rmdat and &h38,2) 
+                                'if deb=3 then print #5,"Bad F6 opcode ",hex(rmdat and &h38,2) 
                                 x86illegal() 
                        End Select
                        Exit Select 
@@ -6549,11 +6475,7 @@ EndIf
                         	case &h00  /'TEST w'/
                                 tempw2=getword(): if abrt then exit Select 
                                 setznp16(tempw And tempw2) 
-                                if (is486) Then 
-                                        cycles-=iif((modo=3),1,2) 
-                                else
-                                        cycles-=iif((modo=3),2,5)
-                                EndIf
+                                cycles-=iif((modo=3),1,2) 
                                 Exit Select 
                         	case &h10  /'NOT w'/
                                 seteaw(Not(tempw))  ' NOT=invertir bits
@@ -6613,7 +6535,7 @@ EndIf
                                                 loadcs(readmemw_386(0,2)) 
                                         EndIf
                                 EndIf
-                                cycles-=iif((is486),24,22 )
+                                cycles-=24
                                 Exit Select 
                         	case &h38  /'IDIV AX,w'/
                                 tempws=cint((CShort(DX) Shl 16) Or AX) 
@@ -6626,7 +6548,7 @@ EndIf
                                         	setznp16(AX): /'NO es Cyrix'/
                                         'EndIf
                                 Else
-                                        if deb=3 then print #5,"IDIVw exception ",tempws,tempw,tempws2 
+                                        'if deb=3 then print #5,"IDIVw exception ",tempws,tempw,tempws2 
                                         pc=oldpc 
                                         if modoprotegido Then 
                                                 pmodeint(0,0) 
@@ -6644,7 +6566,7 @@ EndIf
                                 cycles-=27 
                                 Exit Select 
                         	case Else 
-                                if deb=3 then print #5,"Bad F7 opcode ",hex(rmdat and &h38,2) 
+                                'if deb=3 then print #5,"Bad F7 opcode ",hex(rmdat and &h38,2) 
                                 x86illegal() 
                        End Select
                        Exit Select 
@@ -6655,11 +6577,7 @@ EndIf
                         	case &h00  /'TEST l'/
                                 templ2=getlong(): if abrt then exit Select 
                                 setznp32(templ And templ2) 
-                                if (is486) Then 
-                                        cycles-=iif((modo=3),1,2) 
-                                else
-                                        cycles-=iif((modo=3),2,5)
-                                EndIf
+                                cycles-=iif((modo=3),1,2) 
                                 Exit Select 
                         	case &h10  /'NOT l'/
                                 seteal(Not(templ))  ' NOT=invertir bits
@@ -6699,7 +6617,7 @@ EndIf
                                 'if ( 0 =cpu_iscyrix) Then ' anulo esto, NUNCA sera CYRIX, solo INTEL
                                 	setznp32(EAX) /'si NO es Cyrix'/
                                 'EndIf
-                                cycles-=iif((is486),40,38 )
+                                cycles-=40
                                 Exit Select 
                         	case &h38  /'IDIV EAX,l'/
                                 idivl(clng(templ)) 
@@ -6709,7 +6627,7 @@ EndIf
                                 cycles-=43 
                                 Exit Select 
                         	case Else 
-                                if deb=3 then print #5,"Bad F7 opcode ",hex(rmdat and &h38,2)
+                                'if deb=3 then print #5,"Bad F7 opcode ",hex(rmdat and &h38,2)
                                 x86illegal() 
                        End Select
                        Exit Select 
@@ -6780,7 +6698,7 @@ EndIf
                                 Exit Select 
                         	case &h10  /'CALL'/
                                 tempw=geteaw() 
-                                'if (deb=3) Then print #5,"CALL    ", tempw, easeg, eaaddr
+                                ''if (deb=3) Then print #5,"CALL    ", tempw, easeg, eaaddr
                                 if abrt Then exit Select 
                                 if ssegs Then ss0=oldss 
                                 if stack32 Then 
@@ -6791,11 +6709,7 @@ EndIf
                                         SP-=2 
                                 EndIf
                                 pc=tempw 
-                                if (is486) Then 
-                                        cycles-=5 
-                                else
-                                        cycles-=iif((modo=3),7,10)
-                                EndIf
+                                cycles-=5 
                                 Exit Select 
                                 
                                 
@@ -6805,7 +6719,7 @@ EndIf
                         	case &h18  /'CALL far'/
                                 tempw=readmemw_386(easeg,eaaddr) 
                                 tempw2=readmemw_386(easeg,(eaaddr+2))
-                                'if (deb=3) Then print #5,"CALL FAR (INS18) ",tempw,tempw2
+                                ''if (deb=3) Then print #5,"CALL FAR (INS18) ",tempw,tempw2
                                 if abrt Then exit Select 
                                 tempw3=CS1 
                                 templ2=pc 
@@ -6834,7 +6748,7 @@ EndIf
                                         writememw_386(ss0,((SP-4) And &hFFFF),templ2) 
                                         SP-=4 
                                 EndIf
-                                cycles-=iif((is486),17,22) 
+                                cycles-=17 
                                 Exit Select 
                      ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''        
                                 
@@ -6844,11 +6758,7 @@ EndIf
                         	case &h20  /'JMP'/
                                 tempw=geteaw(): if abrt then exit Select 
                                 pc=tempw 
-                                if (is486) Then 
-                                        cycles-=5 
-                                else
-                                        cycles-=iif((modo=3),7,10)
-                                EndIf
+                                cycles-=5 
                                 Exit Select 
                         	case &h28  /'JMP far'/
                                 oxpc=pc 
@@ -6856,7 +6766,7 @@ EndIf
                                 tempw2=readmemw_386(easeg,eaaddr+2): if abrt then exit Select 
                                 pc=tempw                                 
                                 loadcsjmp(tempw2,oxpc): if abrt then exit Select 
-                                cycles-=iif((is486),13,12) 
+                                cycles-=13 
                                 Exit Select 
                         	case &h30  /'PUSH w'/
                                 tempw=geteaw(): if abrt then exit Select 
@@ -6871,7 +6781,7 @@ EndIf
                                 cycles-=iif((modo=3),2,5) 
                                 Exit Select 
                         	case Else 
-                                if deb=3 then print #5,"Bad FF opcode ",hex(rmdat and &h38,2)
+                                'if deb=3 then print #5,"Bad FF opcode ",hex(rmdat and &h38,2)
                                 x86illegal() 
                        End Select
                        Exit Select 
@@ -6902,11 +6812,7 @@ EndIf
                                 EndIf
                                 pc=templ 
                                 if (pc=&hFFFFFFFF) Then print #5,"Failed CALL" 
-                                if (is486) Then 
-                                        cycles-=5 
-                                else
-                                        cycles-=iif((modo=3),7,10)
-                                EndIf
+                                cycles-=5 
                                 Exit Select 
                                 
                                 
@@ -6946,7 +6852,7 @@ EndIf
                                         SP-=8 
                                 EndIf
                                 if (pc=&hFFFFFFFF) Then print #5,"Failed CALL far " 
-                                cycles-=iif((is486),17,22) 
+                                cycles-=17 
                                 Exit Select 
                      '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
                                 
@@ -6957,11 +6863,7 @@ EndIf
                         	case &h20  /'JMP'/
                                 templ=geteal(): if abrt then exit Select 
                                 pc=templ 
-                                if (is486) Then 
-                                        cycles-=5 
-                                else
-                                        cycles-=iif((modo=3),7,12)
-                                EndIf
+                                cycles-=5 
                                 if (pc=&hFFFFFFFF) Then print #5,"Failed JMP"
                                 Exit Select 
                         	case &h28  /'JMP far'/
@@ -6971,7 +6873,7 @@ EndIf
                                 pc=templ                                 
                                 loadcsjmp(templ2,oxpc) 
                                 if (pc=&hFFFFFFFF) Then print #5,"Failed JMP far" 
-                                cycles-=iif((is486),13,12 )
+                                cycles-=13
                                 Exit Select 
                         	case &h30  /'PUSH l'/
                                 templ=geteal(): if abrt then exit Select 
@@ -6986,12 +6888,12 @@ EndIf
                                 cycles-=iif((modo=3),2,5) 
                                 Exit Select 
                         	case Else 
-                                if deb=3 then print #5,"Bad 32-bit FF opcode ",hex(rmdat and &h38,2) 
+                                'if deb=3 then print #5,"Bad 32-bit FF opcode ",hex(rmdat and &h38,2) 
                                 x86illegal() 
                        End Select
 
                 	case Else 
-                        if deb=3 then print #5,"Bad opcode ",opcode,op32 Shr 8,opcode Or op32,cs0 Shr 4,pc
+                        'if deb=3 then print #5,"Bad opcode ",opcode,op32 Shr 8,opcode Or op32,cs0 Shr 4,pc
                         x86illegal() 
                 End Select
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -7059,7 +6961,7 @@ EndIf
                 	      ''''''''''''''''''
                         if (temp<>&hFF) Then 
                                 if (inhlt) Then pc+=1 
-                                'If (deb=3) Then Print #5,"Hardware int:";Hex(temp,2);" ";ins;" ";ins2;" ";Hex(CS1,4);"(";Hex(cs0,8);"):";Hex(pc,8)
+                                ''if (deb=3) Then Print #5,"Hardware int:";Hex(temp,2);" ";ins;" ";ins2;" ";Hex(CS1,4);"(";Hex(cs0,8);"):";Hex(pc,8)
                                 if modoprotegido Then 
                                 		    'Print #5,"Int. Protegida:";temp
                                         pmodeint(temp,0) 
@@ -7074,7 +6976,7 @@ EndIf
                                         oxpc=pc 
                                         pc=readmemw_386(0,addr) 
                                         loadcs(readmemw_386(0,addr+2)) 
-                                        'If (deb=3) Then If temp=&h76 Then Print #5,"INT to ";Hex(CS1,4);":";Hex(pc,4)
+                                        ''if (deb=3) Then If temp=&h76 Then Print #5,"INT to ";Hex(CS1,4);":";Hex(pc,4)
                                 EndIf
                                 inint=1 
                         EndIf

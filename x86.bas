@@ -3,7 +3,7 @@
 
 Sub x86_int(ByVal num As Integer ) 
 	
-        Dim As ULong  addr 
+        Dim As ULong  addr =Any
         pc=oldpc 
         if modoprotegido Then 
                 pmodeint(num,0) 
@@ -35,7 +35,7 @@ End Sub
 
 ' esta rutina viene del modulo 286.C que yo no empleo, pero no se si debe ser asi.
 Sub x86illegal() 
-        Dim As UShort  addr 
+        Dim As UShort  addr =Any
         'Print #5,"x86 ilegal MSW,CR0,CS,PC,OPCODE:";Hex(msw,4);",";Hex(cr0,8);",";Hex(cs0,4);",";Hex(pc,8);",";Hex(opcode,2)
         if modoprotegido Then 
                 pmodeint(6,0) 
@@ -81,7 +81,7 @@ End sub
 
 ' inicializa CPU
 Sub resetx86(reset_cpu As Integer) 
-	Dim a As Integer
+	Dim a As Integer=Any
 	
 	' inicializa puertos a FF al completo 
 	For a=0 To 65535
@@ -124,7 +124,7 @@ End Sub
 
 
 ' esta rutina la usan el teclado (ctrl+alt+sup) la INS HALT, o las INS que generan errores graves.
-' es para problemas gordos, que obligan a reininiar si o si
+' es para problemas gordos, que obligan a reiniciar si o si
 Sub softresetx86() 
 	'Print "EL PC SE REINICIA!!!!":Sleep
         use32=0 
@@ -181,19 +181,12 @@ Sub init_PC(bios As String)
         '''''''''''''''''''
         
         dma_reset()
-        'fdc_reset()
-        'lpt_reset() ' este creo que no existe, sino en su lugar esta LPT_INIT() que dclara los IO_SETHANDLER
         pic_reset()
         pit_reset()
         serial_reset()
-        'serial1_init(&h3f8)
-        'serial1_init(&h2f8)
-        'mouse_serial_init()
-        'mouse_serial_rcr()
         
         setpitclock(66666666) ' rspeed (aqui arriba) es la velocidad REAL de la CPU (66mhz=66666666=66.666.666)
 		  
-        'ali1429_reset()	
 	'''''''''''''''''''''''''''''''''
      
 	'install_int_ex(onesec,BPS_TO_TIMER(1)) ' ni idea, pero en WIN-timer.C esta vacio, declarado sin nada

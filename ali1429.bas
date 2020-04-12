@@ -4,7 +4,7 @@
 declare Sub flushmmucache()
 
 Static Shared as Integer ali1429_index
-static Shared as Byte ali1429_regs(256)
+static Shared as Byte ali1429_regs(0 To 255)
 
 Sub ali1429_write(port As UShort , valor As UByte ) 
 	
@@ -61,7 +61,7 @@ Function ali1429_read(port As UShort ) As UByte
 End Function
 
 Sub ali1429_reset() 
-        Dim As Integer c
+        Dim As Integer c=Any
         For c=0 To 255
         	 ali1429_regs(c)=&hff
         Next

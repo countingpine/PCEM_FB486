@@ -40,8 +40,8 @@ Sub pic_updatepending()
 End Sub
 
 function pic_update_mask(ins As UByte) As UByte
-        Dim As integer c
-        Dim As UByte mask
+        Dim As integer c=Any
+        Dim As UByte mask=Any
         mask = 0
         for c = 0 To 7
                 if (ins And (1 Shl c)) Then
@@ -54,7 +54,7 @@ End function
 
 
 Sub pic_write(ByVal addr As UShort , ByVal valor As UByte ) 
-        Dim As Integer c 
+        Dim As Integer c =Any
         if (addr And 1) Then 
                 Select Case As Const  (pic.icw)
                 	Case 0  /'OCW1'/
@@ -121,7 +121,7 @@ Function pic_read(ByVal addr As UShort ) As UByte
 End Function
 
 Sub pic2_write(ByVal addr As UShort , ByVal valor As UByte ) 
-        Dim As Integer c 
+        Dim As Integer c =Any
         if (addr And 1) Then 
                 Select Case As Const  (pic2.icw)
                 	Case 0  /'OCW1'/
@@ -211,9 +211,9 @@ End Sub
 
 
 Function picinterrupt() As UByte 
-        Dim As UByte temp, temp2
+        Dim As UByte temp=any, temp2=Any
         temp=pic.pend And inv(pic.mask)
-        Dim As Integer c 
+        Dim As Integer c =Any
         for c = 0 To 1
              if (temp And (1 Shl c)) Then 
                   pic.pend = pic.pend And inv(1 Shl c) 
