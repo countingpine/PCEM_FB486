@@ -1,0 +1,1 @@
+c:\aplis\FreeBasic\fbc  -gen gcc -Wc -Ofast  -s console "_80486_emu.bas"
