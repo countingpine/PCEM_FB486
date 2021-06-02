@@ -18,3 +18,9 @@ From https://www.freebasic.net/forum/viewtopic.php?f=8&t=27435:
 > It works in both protected mode and real mode, but when entering protected mode, the PC becomes slow.
 >
 > Note: Keyboard cursors may be disabled the first time. Maybe when pressing "NumLock" they work again.
+> 
+> ![fb80486_bios.jpg](fb80486_bios.jpg)
+> ![fb80486_dos1.jpg](fb80486_dos1.jpg)
+> ![fb80486_dos2.jpg](fb80486_dos2.jpg)
+> ![fb80486_dos3.jpg](fb80486_dos3.jpg)
+> ![fb80486_principal.jpg](fb80486_principal.jpg)
